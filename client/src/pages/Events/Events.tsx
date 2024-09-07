@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom'
 
 const Events = ({ events }: { events: Event[] }) => {
     return (
-        <div>
+        <div className='md:w-auto w-full'>
             <h1 className="font-medium text-3xl text-black mb-1">
                 Events
             </h1>
-            <div className="grid grid-cols-4 gap-y-12 mt-10 gap-7">
+            <div className="grid md:grid-cols-4 grid-cols-1 gap-y-12 mt-10 gap-7">
                 {
                     events.map((event, i) => (
                         <Link to={`/event/${event._id}`} key={i}>

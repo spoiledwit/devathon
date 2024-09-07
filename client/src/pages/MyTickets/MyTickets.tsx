@@ -36,7 +36,7 @@ const MyTickets = () => {
             <div className="min-h-screen  flex flex-col items-center py-8">
                 <h1 className="text-3xl font-medium mb-8">My Tickets</h1>
 
-                <div className="grid grid-cols-1 gap-6  w-full px-44">
+                <div className="grid grid-cols-1 gap-6  w-full md:px-44 px-5">
                     {loading ?
                         <div className="grid grid-cols-1 gap-3">
                             {

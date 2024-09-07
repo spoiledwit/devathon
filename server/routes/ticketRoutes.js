@@ -5,7 +5,8 @@ import {
     getUserTickets,
     updateTicket,
     getAgentTickets,
-    getAllTickets
+    getAllTickets,
+    verifyTicket
 } from "../controllers/ticket.js";
 
 import express from "express";
@@ -21,5 +22,6 @@ router.get("/user", verifyToken, getUserTickets);
 router.get("/event/:eventId", getEventTickets);
 router.get("/:id", getTicketById);
 router.post("/", verifyToken, createTicket);
+router.post("/verify/:id", verifyToken, verifyTicket);
 
 export default router;

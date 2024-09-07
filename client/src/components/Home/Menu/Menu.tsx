@@ -4,6 +4,7 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 // import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
+import { categories } from "@/constants";
 
 export const cats = [
   {
@@ -125,7 +126,7 @@ export const cats = [
 
 function Menu() {
 
-  const [Menu, setMenu] = useState(cats);
+  const [Menu, setMenu] = useState(categories);
   const menuRef = useRef(null);
 
   const scrollLeft = () => {
@@ -180,16 +181,16 @@ function Menu() {
             exit={{ opacity: 0 }}
           >
             {/* @ts-ignore */}
-            {Menu?.map((cat: any) => (
+            {Menu?.map((cat: any, index: number) => (
               <motion.div
-                key={cat._id}
+                key={index}
                 className="cursor-pointer"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
                 <Link
-                  to={`/category/${cat.name.replace(/ /g, "-").toLowerCase()}`}
+                  to={`/events/category/${cat.name.replace(/ /g, "-").toLowerCase()}`}
                   className="flex gap-2 items-center">
                   <div
                     className="flex flex-col items-center gap-1 justify-center"

@@ -16,6 +16,14 @@ const TicketSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Payment",
     },
+    code: {
+        type: String,
+        required: true
+    },
+    verified: {
+        type: Boolean,
+        default: false
+    }
 })
 
 const TicketModel = mongoose.model("Ticket", TicketSchema);

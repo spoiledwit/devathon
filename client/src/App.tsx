@@ -14,6 +14,7 @@ import MyTickets from "./pages/MyTickets/MyTickets";
 import Payments from "./pages/Admin/Payments";
 import Tickets from "./pages/Admin/Tickets";
 import ProfilePage from "./pages/Profile";
+import CategoryEvents from "./pages/Events/CategoryEvents";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/event/:id" element={<EventDetails />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/my-tickets" element={<MyTickets />} />
+        <Route path="/events/category/:categoryName" element={<CategoryEvents />} />
         <Route path="/profile" element={<ProfilePage />} />
 
         <Route path="admin" element={<AdminLayout />}>

@@ -12,6 +12,7 @@ export const createTicket = async (req, res) => {
         const ticket = await TicketModel.create({
             eventId,
             userId,
+            code: Math.random().toString(36).substring(7),
         });
         const payment = await PaymentModel.create({
             ticketId: ticket._id,
@@ -22,6 +23,8 @@ export const createTicket = async (req, res) => {
         });
         ticket.paymentId = payment._id;
         await ticket.save();
+
+        console.log(ticket);
         const response = await initializePayment(ticket, event);
         res.status(201).json({ ticket, session: response });
     } catch (err) {
@@ -62,12 +65,12 @@ export const updateTicket = async (req, res) => {
 
 // Get Tickets of a User
 export const getUserTickets = async (req, res) => {
-  try {
-    const tickets = await TicketModel.find({ userId: req.userId }).populate("eventId", "title description eventDate images location").populate("userId", "name email");
-    res.status(200).json({ tickets });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    try {
+        const tickets = await TicketModel.find({ userId: req.userId }).populate("eventId", "title description eventDate images location").populate("userId", "name email");
+        res.status(200).json({ tickets });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
 // Get Tickets of an Event
@@ -141,3 +144,25 @@ export const getAllTickets = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+export const verifyTicket = async (req, res) => {
+    try {
+        const { code } = req.body;
+        const { id } = req.params;
+
+        const ticket = await TicketModel.findById(id)
+
+        console.log(ticket);
+
+        if (ticket.code === code) {
+            ticket.status = "approved";
+            await ticket.save();
+            res.status(200).json({ ticket });
+        } else {
+            res.status(400).json({ error: "Invalid code" });
+        }
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}

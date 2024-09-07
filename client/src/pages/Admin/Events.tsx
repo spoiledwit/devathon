@@ -32,6 +32,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import PhotosUploader from "@/components/ImageUploader";
+import CategorySelector from "@/components/Selector/CategorySelector";
 
 const BASE_URL = import.meta.env.VITE_BASE_URI;
 
@@ -86,6 +87,7 @@ const Events: React.FC = () => {
   const { user } = useAuthStore();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [category, setCategory] = useState<string[]>([]);
   const [eventStats, setEventStats] = useState<EventStats>({
     totalEvents: 0,
     upcomingEvents: 0,
@@ -166,6 +168,7 @@ const Events: React.FC = () => {
         ...newEvent,
         location: `${location.lat},${location.lng}`,
         region,
+        category: category[0],
         images,
       };
       await axios.post(`${BASE_URL}/event`, eventData, {
@@ -404,7 +407,7 @@ const Events: React.FC = () => {
                 <Label htmlFor="location" className="text-right">
                   Location
                 </Label>
-                <div className="col-span-3">
+                <div className="col-span-3 ">
                   <Locator
                     setLocation={setLocation}
                     Location={location}
@@ -428,14 +431,13 @@ const Events: React.FC = () => {
                 <Label htmlFor="category" className="text-right">
                   Category
                 </Label>
-                <Input
-                  id="category"
-                  value={newEvent.category || ""}
-                  onChange={(e) =>
-                    setNewEvent({ ...newEvent, category: e.target.value })
-                  }
-                  className="col-span-3"
-                />
+                <div className="col-span-3">
+                  <CategorySelector
+                    selected={category}
+                    setSelected={setCategory}
+                    limit={1}
+                  />
+                </div>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="price" className="text-right">
@@ -580,9 +582,9 @@ const Events: React.FC = () => {
                     setEventToUpdate(
                       eventToUpdate
                         ? {
-                            ...eventToUpdate,
-                            price: parseFloat(e.target.value),
-                          }
+                          ...eventToUpdate,
+                          price: parseFloat(e.target.value),
+                        }
                         : null
                     )
                   }

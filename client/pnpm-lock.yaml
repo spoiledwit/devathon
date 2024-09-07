@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 lockfileVersion: '9.0'
 
 settings:
@@ -5724,3 +5725,5 @@ snapshots:
       react: 18.3.1
 
   zwitch@2.0.4: {}
+=======
+>>>>>>> 066c116563ce279a1b53dcead3ccf2f2759b383f

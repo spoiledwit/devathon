@@ -73,6 +73,18 @@ export const handlePaymentSuccess = async (req, res) => {
 
       const emails = [ticket.userId.email, ticket.eventId.agentId.email];
 
+      sendEmail({
+        email: admin.email,
+        subject: "Payment successful",
+        text: `You have received $${onePercent} from the payment for ${ticket.eventId.title}`,
+      });
+
+      sendEmail({
+        email: ticket.userId.email,
+        subject: "Ticket Code",
+        text: `Your ticket code for ${ticket.eventId.title} is ${ticket.code}`,
+      });
+
       for (const email of emails) {
         await sendEmail({
           email: email,

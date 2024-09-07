@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Send, Image as ImageIcon, X, User, Phone, Video } from "lucide-react";
+import { Send, Image as ImageIcon, X, User, Phone, Video, Menu } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import useSocketStore from "@/store/socketStore";
@@ -30,6 +30,7 @@ interface Conversation {
 
 const Chat: React.FC = () => {
   const { user } = useAuthStore();
+  const [showSidebar, setShowSidebar] = useState(false);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] =
     useState<Conversation | null>(null);
@@ -87,8 +88,7 @@ const Chat: React.FC = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${
-          import.meta.env.VITE_BASE_URI
+        `${import.meta.env.VITE_BASE_URI
         }/conversation/${conversationId}/messages`,
         {
           headers: {
@@ -145,8 +145,7 @@ const Chat: React.FC = () => {
     socket.emit("send_message", messageData);
 
     const response = await axios.post(
-      `${import.meta.env.VITE_BASE_URI}/conversation/${
-        selectedConversation._id
+      `${import.meta.env.VITE_BASE_URI}/conversation/${selectedConversation._id
       }`,
       messageData,
       {
@@ -247,10 +246,14 @@ const Chat: React.FC = () => {
   return (
     <div className="flex overflow-hidden max-h-[95vh] bg-gray-50">
       {/* Sidebar */}
-      <div className="w-1/4 bg-white shadow-md overflow-y-auto">
+      <div className={`md:w-1/4  bg-white shadow-md overflow-y-auto ${showSidebar || !selectedConversation ? "fixed left-0 h-screen w-[50vw]" : "w-0"}`}>
         <div className="p-4 border-b">
-          <h2 className="text-2xl font-semibold text-gray-800">
+          <h2 className="md:text-2xl text-lg flex flex-row items-center gap-5 font-semibold text-gray-800">
             Conversations
+            <X
+              className="md:hidden h-6 w-6 text-gray-500 cursor-pointer"
+              onClick={() => setShowSidebar(false)}
+            />
           </h2>
         </div>
         <ul className="divide-y divide-gray-200">
@@ -258,11 +261,10 @@ const Chat: React.FC = () => {
             <li
               key={conversation._id}
               onClick={() => handleConversationSelect(conversation)}
-              className={`p-4 cursor-pointer transition-colors duration-150 ${
-                selectedConversation?._id === conversation._id
-                  ? "bg-blue-50"
-                  : "hover:bg-gray-50"
-              }`}
+              className={`p-4 cursor-pointer transition-colors duration-150 ${selectedConversation?._id === conversation._id
+                ? "bg-blue-50"
+                : "hover:bg-gray-50"
+                }`}
             >
               <div className="flex items-center space-x-3">
                 <div className="flex-shrink-0">
@@ -295,27 +297,35 @@ const Chat: React.FC = () => {
         {selectedConversation ? (
           <>
             {/* Chat Header */}
-            <div className="bg-white p-4 border-b flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <User className="h-10 w-10 text-gray-400 bg-gray-200 rounded-full p-2" />
+            <div className="bg-white md:p-4 p-2 border-b flex items-center justify-between">
+              <div className="flex flex-row items-center gap-2">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-800">
-                    {
-                      selectedConversation.members.find(
-                        (member) => member._id !== user?._id
-                      )?.name
-                    }
-                  </h2>
-                  <div className="flex items-center space-x-2">
-                    {isOnline && (
-                      <span className="flex items-center text-green-500 text-sm">
-                        <span className="h-2 w-2 bg-green-500 rounded-full mr-1"></span>
-                        Online
-                      </span>
-                    )}
-                    {isTyping && (
-                      <span className="text-gray-500 text-sm">Typing...</span>
-                    )}
+                  <Menu
+                    className="md:hidden h-8 w-8 text-gray-500 cursor-pointer"
+                    onClick={() => setShowSidebar((prev) => !prev)}
+                  />
+                </div>
+                <div className="flex items-center space-x-3">
+                  <User className="h-10 w-10 text-gray-400 bg-gray-200 rounded-full p-2" />
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-800">
+                      {
+                        selectedConversation.members.find(
+                          (member) => member._id !== user?._id
+                        )?.name
+                      }
+                    </h2>
+                    <div className="flex items-center space-x-2">
+                      {isOnline && (
+                        <span className="flex items-center text-green-500 text-sm">
+                          <span className="h-2 w-2 bg-green-500 rounded-full mr-1"></span>
+                          Online
+                        </span>
+                      )}
+                      {isTyping && (
+                        <span className="text-gray-500 text-sm">Typing...</span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -331,7 +341,7 @@ const Chat: React.FC = () => {
 
             {/* Messages */}
             <div
-              className="px-16 max-h-[60vh] pb-20 overflow-auto"
+              className="px-16 md:max-h-[60vh] max-h-[75vh] pb-20 overflow-auto"
               ref={chatRef}
             >
               {messages.map((message, index) => (
@@ -340,18 +350,16 @@ const Chat: React.FC = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className={`flex ${
-                    message.sender === user?._id
-                      ? "justify-end"
-                      : "justify-start"
-                  }`}
+                  className={`flex ${message.sender === user?._id
+                    ? "justify-end"
+                    : "justify-start"
+                    }`}
                 >
                   <div
-                    className={`max-w-xs px-4 py-2 rounded-lg shadow ${
-                      message.sender === user?._id
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-100 text-gray-800"
-                    }`}
+                    className={`max-w-xs px-4 py-2 rounded-lg shadow ${message.sender === user?._id
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-100 text-gray-800"
+                      }`}
                   >
                     {message.content.image && (
                       <img
@@ -370,7 +378,7 @@ const Chat: React.FC = () => {
             </div>
 
             {/* Message Input */}
-            <div className="bg-white p-4 border-t absolute bottom-0 w-[70vw]">
+            <div className="bg-white p-4 border-t absolute bottom-0 md:w-[70vw] w-screen">
               <div className="flex items-center space-x-2">
                 <input
                   type="text"
@@ -451,7 +459,7 @@ const Chat: React.FC = () => {
           </>
         ) : (
           <div className="flex-1 flex items-center justify-center bg-gray-50">
-            <p className="text-gray-500 text-lg">
+            <p className="hidden md:block text-gray-500 text-lg">
               Select a conversation to start chatting
             </p>
           </div>
