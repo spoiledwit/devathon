@@ -43,7 +43,7 @@ const FullSearchBar = ({ input, setInput, startingDate, setCheckIn, endingDate, 
     </div>
     <button
       type="submit"
-      className="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full mr-2"
+      className="flex items-center justify-center w-12 h-12 bg-black text-white rounded-full mr-2"
     >
       <FiSearch size={24} />
     </button>

@@ -282,7 +282,7 @@ const Locator = ({
             <Button variant="outline">
               {address ? (
                 <div className="flex items-center space-x-2">
-                  <GoLocation size={20} className="mr-2 text-primary" />
+                  <GoLocation size={20} className="mr-2 text-black" />
                   <p className="text-sm sm:text-base whitespace-nowrap">
                     {address.length > 25
                       ? address.slice(0, 25) + "..."
@@ -351,12 +351,12 @@ const Locator = ({
           </DialogContent>
         </Dialog>
         {/* Displaying the interactive map here */}
-        <p className="mt-3 mb-2 text-sm font-medium text-primary">
+        <p className="mt-3 mb-2 text-sm font-medium text-black">
           Click on the map to place the marker, or search for a location above
         </p>
         <div className="flex justify-center">
-          <div className="w-[600px] h-96 overflow-hidden rounded-md">
-            <div id="map" className="w-full h-full border-4 border-primary"></div>
+          <div className="w-[380px] h-52 overflow-hidden rounded-md">
+            <div id="map" className="w-full h-full border border-gray-200"></div>
           </div>
         </div>
       </div>
