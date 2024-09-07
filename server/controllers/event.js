@@ -18,10 +18,10 @@ export const createEvent = async (req, res) => {
             region,
         } = req.body;
 
-        const isSafe = await moderateContent(title);
-        if (!isSafe) {
-            return res.status(400).json({ error: "Content is not safe" });
-        }
+        // const isSafe = await moderateContent(title);
+        // if (!isSafe) {
+        //     return res.status(400).json({ error: "Content is not safe" });
+        // }
 
         const userId = req.userId;
         const event = await EventModel.create({
