@@ -14,25 +14,21 @@ export const initSocket = (server) => {
   io.on("connection", (socket) => {
     // User connection
     socket.on("user_connected", (data) => {
+      console.log(`User ${data} connected`);
       const userId = data;
       userSockets[userId] = socket.id;
-      console.log(`User ${userId} connected with socket ID ${socket.id}`);
-      // User joins their own room to facilitate personal status updates
       socket.join(`user_${userId}`);
-      // Notify others in the user's room that they are now online
       io.to(`user_${userId}`).emit("user_status", { userId, isOnline: true });
     });
 
     socket.on("subscribe_to_user", (data) => {
-      // leave all previous rooms
-      // socket.leaveAll();
+      
       const userId = data;
       if (! typeof userId === "string") {
         return;
       }
       const socketId = userSockets[userId];
       socket.join(`user_${userId}`);
-      // immediately send user status
       socket.emit("user_status", {
         userId,
         isOnline: !!socketId,
@@ -62,10 +58,11 @@ export const initSocket = (server) => {
 
     socket.on("send_message", (data) => {
       const { sender, contentType, text, conversationId, to, image } = data;
+      console.log(data);
       let createdAt = new Date().toISOString();
       let updatedAt = new Date().toISOString();
       let message;
-      if (data.contentType === "text") {
+      if (data.contentType === "text" || data.contentType === "image") {
         message = {
           conversationId,
           sender,
@@ -78,9 +75,6 @@ export const initSocket = (server) => {
           createdAt,
           updatedAt,
         };
-        console.log("message", message);
-        console.log(userSockets);
-        console.log(userSockets[to]);
         if (userSockets[to]) {
           io.to(userSockets[to]).emit("receive_message", message);
         }
