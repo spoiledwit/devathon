@@ -2,15 +2,18 @@ import Events from "./Events/Events";
 import { useEffect, useState } from "react";
 import { Event } from "@/types";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 const Home = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const location = useLocation();
 
   const fetchEvents = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BASE_URI}/event/all`);
+      const queryParams = window.location.search;
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URI}/event/all${queryParams}`);
       console.log(res.data);
       setEvents(res.data.events);
     } catch (error) {
@@ -22,7 +25,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchEvents();
-  }, [])
+  }, [location.search])
 
   return (
     <div className="min-h-screen">

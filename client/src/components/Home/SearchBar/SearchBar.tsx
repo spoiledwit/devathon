@@ -3,50 +3,43 @@ import { useNavigate } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
 import "./SearchBar.css";
 import { useLocation } from "react-router-dom";
+import { ListRestart } from "lucide-react";
 
 // @ts-ignore
-const FullSearchBar = ({ input, setInput, checkIn, setCheckIn, checkOut, setCheckOut, guests, setGuests, handleClick }) => (
+const FullSearchBar = ({ input, setInput, startingDate, setCheckIn, endingDate, setCheckOut, handleClick, resetFilters }) => (
   <form className="flex items-center justify-between w-full h-full" onSubmit={handleClick}>
     <div className="flex-1 px-4 py-4 ml-6 min-w-[280px]">
       <label className="block text-[13px] font-medium">Where</label>
       <input
         type="text"
         className="w-full border-none text-sm placeholder-gray-500 placeholder:font-light focus:outline-none"
-        placeholder="Search destinations"
+        placeholder="Search location"
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />
     </div>
     <div className="border-l border-gray-300 h-12"></div>
     <div className="flex-1 px-4 py-4">
-      <label className="block text-[13px] font-medium">Check in</label>
+      <label className="block text-[13px] font-medium">Starting date</label>
       <input
         type="date"
         className="w-full border-none text-sm placeholder-gray-500 placeholder:font-light focus:outline-none"
-        value={checkIn}
+        value={startingDate}
         onChange={(e) => setCheckIn(e.target.value)}
       />
     </div>
     <div className="border-l border-gray-300 h-12"></div>
     <div className="flex-1 px-4 py-4">
-      <label className="block text-[13px] font-medium">Check out</label>
+      <label className="block text-[13px] font-medium">Ending date</label>
       <input
         type="date"
         className="w-full border-none text-sm text-gray-800 placeholder-gray-500 placeholder:font-light focus:outline-none"
-        value={checkOut}
+        value={endingDate}
         onChange={(e) => setCheckOut(e.target.value)}
       />
     </div>
-    <div className="border-l border-gray-300 h-12"></div>
-    <div className="flex-1 px-4 py-4">
-      <label className="block text-[13px] font-medium">Who</label>
-      <input
-        type="number"
-        className="w-full border-none text-sm placeholder-gray-500 placeholder:font-light focus:outline-none"
-        placeholder="Add guests"
-        value={guests}
-        onChange={(e) => setGuests(e.target.value)}
-      />
+    <div title="Reset Filters" className="border-l w-fit px-4 py-4">
+      <ListRestart onClick={resetFilters} size={20} />
     </div>
     <button
       type="submit"
@@ -67,9 +60,6 @@ const CompactSearchBar = ({ handleClick }: { handleClick: any }) => (
       <span className="text-sm font-medium">Any week</span>
     </div>
     <div className="border-l border-gray-300 h-full"></div>
-    <div className="flex-1 text-center">
-      <span className="text-sm font-light text-gray-500">Add guests</span>
-    </div>
     <button
       type="button"
       className="flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full mr-[-10px]"
@@ -87,14 +77,20 @@ const SearchBar = () => {
   }
   const query = useQuery();
   const [input, setInput] = useState(query.get("region"));
-  const [checkIn, setCheckIn] = useState(query.get("checkIn"));
-  const [checkOut, setCheckOut] = useState(query.get("checkOut"));
-  const [guests, setGuests] = useState(query.get("guests"));
+  const [startingDate, setCheckIn] = useState(query.get("startingDate"));
+  const [endingDate, setCheckOut] = useState(query.get("endingDate"));
   const [isScrolled, setIsScrolled] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const navigate = useNavigate();
   const focusTimeoutRef = useRef(null);
   const isBlockedRef = useRef(false);
+
+  const resetFilters = () => {
+    setInput("");
+    setCheckIn("");
+    setCheckOut("");
+    navigate("");
+  };
 
   const handleClick = (e: any) => {
     e.preventDefault();
@@ -103,16 +99,12 @@ const SearchBar = () => {
     if (input) {
       query.region = input.toLowerCase().replace(/\s/g, "-");
     }
-    if (checkIn) {
-      query.checkIn = checkIn;
+    if (startingDate) {
+      query.startingDate = startingDate;
     }
-    if (checkOut) {
-      query.checkOut = checkOut;
+    if (endingDate) {
+      query.endingDate = endingDate;
     }
-    if (guests) {
-      query.guests = guests;
-    }
-
     const queryString = new URLSearchParams(query).toString();
     navigate(`?${queryString}`);
   };
@@ -163,13 +155,12 @@ const SearchBar = () => {
         ) : (
           <FullSearchBar
             input={input}
+            resetFilters={resetFilters}
             setInput={setInput}
-            checkIn={checkIn}
+            startingDate={startingDate}
             setCheckIn={setCheckIn}
-            checkOut={checkOut}
+            endingDate={endingDate}
             setCheckOut={setCheckOut}
-            guests={guests}
-            setGuests={setGuests}
             handleClick={handleClick}
           />
         )}

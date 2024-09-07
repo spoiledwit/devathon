@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import useAuthStore from "@/store/authStore";
-import { useNavigate } from "react-router-dom";
-import LiveChat from "@/components/LiveChat";
+import { Link, useNavigate } from "react-router-dom";
 import VideoCall from "@/components/VideoCall";
 import toast from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
@@ -85,7 +84,13 @@ const Booking: React.FC<BookingProps> = ({ item }) => {
         <p>Total before taxes</p>
         <p>${item.price}</p>
       </div>
-      <LiveChat item={item} />
+      <Link to={'/chat'}>
+        <Button className="bg-black text-white rounded-md w-full">
+          Chat
+        </Button>
+      </Link>
+      {/* <LiveChat item={item} /> */}
+      {/* @ts-ignore */}
       <VideoCall item={item} />
     </div>
   );

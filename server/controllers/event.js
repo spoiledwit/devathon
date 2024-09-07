@@ -38,8 +38,28 @@ export const createEvent = async (req, res) => {
 
 // Get all Events
 export const getEvents = async (req, res) => {
-    try {
-        const events = await EventModel.find();
+  try {
+    // get region, startingDate, and endingDate from query params
+    const { region, startingDate, endingDate } = req.query;
+
+    // Create query object
+    let query = {};
+
+    // Check if region is provided
+    if (region) {
+      query.region = { $regex: region, $options: "i" };
+    }
+
+    // Check if both startingDate and endingDate are provided
+    if (startingDate && endingDate) {
+      query.eventDate = {
+        $gte: new Date(startingDate), // Greater than or equal to the starting date
+        $lte: new Date(endingDate), // Less than or equal to the ending date
+      };
+    }
+
+    // Fetch events based on the query
+    const events = await EventModel.find(query).populate("agentId", "name");
 
         res.status(200).json({ events });
     } catch (err) {
@@ -49,14 +69,13 @@ export const getEvents = async (req, res) => {
 
 // Get Event by ID
 export const getEventById = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const event = await EventModel.findById(id).populate("agentId", "name");
-        res.status(200).json({ event });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+  try {
+    const { id } = req.params;
+    const event = await EventModel.findById(id).populate("agentId", "name");
+    res.status(200).json({ event });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 // Update Event
