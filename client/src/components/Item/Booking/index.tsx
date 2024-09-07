@@ -38,7 +38,7 @@ const Booking: React.FC<BookingProps> = ({ item }) => {
 
     try {
       setBooking(true);
-      await axios.post(
+      const res = await axios.post(
         `${BASE_URL}/ticket`,
         { eventId: item._id },
         {
@@ -47,7 +47,8 @@ const Booking: React.FC<BookingProps> = ({ item }) => {
           },
         }
       );
-
+      const { session } = res.data;
+      window && window.open(session.url, "_blank");
       toast.success("Booking successful.");
     } catch (error: any) {
       toast.error(error.message);
