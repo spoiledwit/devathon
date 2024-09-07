@@ -14,8 +14,8 @@ import { isAgent } from '../middlewares/isAgent.js';
 
 router.get('/agent/events', verifyToken, isAgent, getAgentEvents);
 
-router.post('/event', createEvent);
-router.get('/events', getEvents);
-router.get('/event/:id', getEventById);
+router.post('/', createEvent);
+router.get('/all', getEvents);
+router.get('/:id', getEventById);
 
 export default router;
