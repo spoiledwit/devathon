@@ -1,0 +1,50 @@
+.menuDiv {
+  display: flex;
+  overflow-x: auto;
+  margin-left: 34px;
+  margin-right: 32px;
+  gap: 20px;
+}
+
+.menuDiv::-webkit-scrollbar {
+  height: 0px;
+  background-color: #F5F5F5;
+}
+
+/* seting for mozilla */
+.menuDiv {
+  scrollbar-width: none;
+}
+
+.menuDiv::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1;
+  border-radius: 10px;
+}
+
+  
+.submenu::-webkit-scrollbar {
+    width: 8px;
+    background-color: #F5F5F5;
+  }
+   
+  /* Track */
+.submenu::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #8f8f8f;
+  }
+   
+  /* Handle on hover */
+  .submenu::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+  }
+
+.menuItem{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-right: 28px;
+    margin-left: 8px;
+    height: 50px;
+}
