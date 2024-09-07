@@ -2,7 +2,7 @@ import AuthModel from "../models/Auth.js";
 
 export const isAgent = async (req, res, next) => {
     try {
-        const { id } = req.user;
+        const id = req.userId;
         const user = await AuthModel.findById(id);
 
         if (user.role !== "agent") {

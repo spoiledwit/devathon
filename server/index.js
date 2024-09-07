@@ -9,6 +9,7 @@ import { createServer } from "http";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import eventRouts from "./routes/eventRoutes.js";
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ app.use("/auth", authRoutes);
 app.use("/admin", adminRoutes);
 app.use("/payment", paymentRoutes);
 app.use("/analytics", analyticsRoutes);
+app.use("/event", eventRouts);
 
 app.use("/moderate", async (req, res)=>{
   const { text } = req.body;

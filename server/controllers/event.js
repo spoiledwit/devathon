@@ -73,3 +73,15 @@ export const deleteEvent = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+export const getAgentEvents = async (req, res) => {
+    try {
+        const userId = req.userId;
+
+        const events = await EventModel.find({ agentId: userId });
+
+        res.status(200).json({ events });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}

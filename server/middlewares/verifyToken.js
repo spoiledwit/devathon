@@ -15,7 +15,7 @@ const verifyToken = async (req, res, next) => {
         } else {
             decodedData = jwt.decode(token);
             req.userId = decodedData?.sub;
-        }    
+        }
 
         next();
     } catch (error) {
