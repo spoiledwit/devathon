@@ -14,10 +14,7 @@ type Event = {
   title: string;
   description: string;
   eventDate: Date;
-  location: {
-    lat: number;
-    lng: number;
-  };
+  location: string;
   region: string;
   price: number;
   images: string[];

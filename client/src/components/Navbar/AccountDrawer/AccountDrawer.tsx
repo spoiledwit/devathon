@@ -41,6 +41,12 @@ const AccountDrawer = () => {
         {showPopup && (
           <div className="absolute px-2 right-0 top-10 bg-white shadow-md rounded-lg  py-2 mt-4 min-w-[15rem] z-50">
             <Link
+              to="/my-tickets"
+              className="flex items-center gap-2 px-3 text-sm py-2 rounded-lg hover:bg-gray-200"
+            >
+              My Tickets
+            </Link>
+            <Link
               to="/chat"
               className="flex items-center gap-2 px-3 text-sm py-2 rounded-lg hover:bg-gray-200"
             >
