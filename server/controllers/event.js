@@ -2,6 +2,7 @@ import AuthModel from "../models/Auth.js";
 import EventModel from "../models/Event.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import TicketModel from "../models/Ticket.js";
+import {moderateContent} from "../utils/moderateContent.js";
 
 // Create Event
 export const createEvent = async (req, res) => {
@@ -16,6 +17,12 @@ export const createEvent = async (req, res) => {
       price,
       region,
     } = req.body;
+
+    const isSafe = await moderateContent(title);
+    if (!isSafe) {
+      return res.status(400).json({ error: "Content is not safe" });
+    }
+
     const userId = req.userId;
     const event = await EventModel.create({
       title,
