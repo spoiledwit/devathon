@@ -49,7 +49,6 @@ export const getEvents = async (req, res) => {
 export const getEventById = async (req, res) => {
   try {
     const { id } = req.params;
-
     const event = await EventModel.findById(id).populate("agentId", "name");
     res.status(200).json({ event });
   } catch (err) {

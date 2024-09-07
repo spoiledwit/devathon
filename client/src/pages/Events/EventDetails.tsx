@@ -33,7 +33,6 @@ const EventDetails = () => {
     const fetchItem = async () => {
         try {
             const res = await axios.get(`${import.meta.env.VITE_BASE_URI}/event/${id}`);
-            console.log(res.data.event)
             setLocation(parseLatLng(res.data.event.location))
             setItem(res.data.event);
             setLoading(false);
