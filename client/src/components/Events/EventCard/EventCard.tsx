@@ -11,7 +11,7 @@ interface EventProps {
 const EventCard = ({ coverImage, title, date, location, description }: EventProps) => {
     return (
         <div className='flex flex-col gap-2 '>
-            <img src={coverImage} className="rounded-md" />
+            <img src={coverImage} className="rounded-md aspect-[16/9] object-cover" />
             <div className="flex flex-col text-lg">
                 <p className="font-semibold">{title}</p>
                 <p className="font-normal opacity-80 text-sm">{description.substring(0,70)}...</p>

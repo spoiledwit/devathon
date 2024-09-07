@@ -6,6 +6,7 @@ import Layout from "./Layout";
 import AdminLayout from "./pages/Admin/Layout";
 import Dashboard from "./pages/Admin/Dashboard";
 import Users from "./pages/Admin/Users";
+import EventDetails from "./pages/Events/EventDetails";
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="/events/:id" element={<EventDetails />} />
 
         <Route path="admin" element={<AdminLayout />}>
           <Route path="" element={<Dashboard />} />
