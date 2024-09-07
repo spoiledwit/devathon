@@ -4,7 +4,8 @@ import {
     getAllTickets,
     getAllUsers,
     deleteUser,
-    makeAgent
+    makeAgent,
+    updateUser
 } from "../controllers/admin.js"
 
 import verifyToken from "../middlewares/verifyToken.js";
@@ -18,7 +19,8 @@ router.get("/users", verifyToken, isAdmin, getAllUsers);
 router.get("/payments", verifyToken, isAdmin, getAllPayments);
 router.get("/tickets", verifyToken, isAdmin, getAllTickets);
 router.get("/events", verifyToken, isAdmin, getAllEvents);
-router.post("/agent/:id", verifyToken, isAdmin, makeAgent);
+router.post("/agent", verifyToken, isAdmin, makeAgent);
 router.delete("/user/:id", verifyToken, isAdmin, deleteUser);
+router.put("/user/:id", verifyToken, isAdmin, updateUser);
 
 export default router;

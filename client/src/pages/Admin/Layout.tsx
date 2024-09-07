@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const AdminLayout = () => {
   const { user } = useAuthStore();
 
-  if (!user) {
+  if (!user || (user.role !== "admin" && user.role !== "agent")) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
         <p className="text-2xl font-bold text-gray-700">
