@@ -27,6 +27,9 @@ export const initSocket = (server) => {
       // leave all previous rooms
       // socket.leaveAll();
       const userId = data;
+      if (! typeof userId === "string") {
+        return;
+      }
       const socketId = userSockets[userId];
       socket.join(`user_${userId}`);
       // immediately send user status
@@ -34,7 +37,7 @@ export const initSocket = (server) => {
         userId,
         isOnline: !!socketId,
       });
-    });
+    }); 
 
     // Handling disconnect event
     socket.on("disconnect", () => {
