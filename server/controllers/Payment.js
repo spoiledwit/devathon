@@ -94,15 +94,9 @@ export const handlePaymentSuccess = async (req, res) => {
       }
 
       await Notification.create({
-        userId: ticket.userId,
+        userId: ticket.userId._id.toString(),
         title: "Payment successful",
         description: `Your payment for ${ticket.eventId.title} was successful`,
-      });
-
-      await Notification.create({
-        userId: ticket.eventId.agentId,
-        title: "Payment successful",
-        description: `Payment for ${ticket.eventId.title} was successful`,
       });
 
       res.redirect(`${process.env.FRONTEND_URL}`);

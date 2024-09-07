@@ -5,7 +5,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import useAuthStore from "@/store/authStore";
 import { toReadableDate } from "@/lib/utils";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { useEffect, useState } from "react";
@@ -58,20 +57,13 @@ export default function Notification() {
           </p>
         )}
         <div className="grid gap-4 py-4">
-          <div className="flex flex-row items-center gap-4">
-            <div className="text-sm text-gray-600 dark:text-white/80">
-              <p>Notification content</p>
-              <p>{toReadableDate(new Date())}</p>
-            </div>
-          </div>
+          
           {notifications?.map((notification: any) => (
             <div className="flex flex-row items-center gap-4">
-              <div
-                className="text-sm text-gray-600 dark:text-white/80"
-              >
-                <p
-                className="text-sm text-gray-600 dark:text-white/80 font-medium"
-                >{notification?.title}</p>
+              <div className="text-sm text-gray-600 dark:text-white/80">
+                <p className="text-sm text-gray-600 dark:text-white/80 font-medium">
+                  {notification?.title}
+                </p>
                 <p>{notification?.description}</p>
                 <p>{toReadableDate(notification?.createdAt)}</p>
               </div>

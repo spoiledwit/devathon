@@ -55,7 +55,7 @@ const Navbar = () => {
         <header className="flex sm:pb-0 pb-3 px-10 md:px-20 justify-between items-center gap-3  ">
           <Link to={"/"} className="flex gap-1 md:mb-2 sm:mb-0">
             <span className="font-semibold block mt-auto text-xl">
-              <p>Devathon</p>
+              <p>TicketSurge</p>
             </span>
           </Link>
 

@@ -68,7 +68,9 @@ export default function Payments() {
     const term = event.target.value.toLowerCase();
     setSearchTerm(term);
     const filtered = payments.filter(payment => 
+      //@ts-ignore
       payment.ticketId.toLowerCase().includes(term) ||
+      //@ts-ignore
       payment.stripeId.toLowerCase().includes(term)
     );
     setFilteredPayments(filtered);
@@ -140,11 +142,10 @@ export default function Payments() {
                   <TableHead>Payment Date</TableHead>
                   <TableHead>Stripe ID</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredPayments.map((payment) => (
+                {filteredPayments.map((payment:any) => (
                   <TableRow key={payment._id}>
                     <TableCell className="font-medium">{payment.ticketId}</TableCell>
                     <TableCell>{formatAmount(payment.amount)}</TableCell>
@@ -157,15 +158,7 @@ export default function Payments() {
                         {payment.paymentStatus}
                       </span>
                     </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => console.log('Delete payment', payment._id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
+                    
                   </TableRow>
                 ))}
               </TableBody>
