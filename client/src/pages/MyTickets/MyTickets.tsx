@@ -18,6 +18,9 @@ const MyTickets = () => {
             })
             console.log(res.data);
             setTickets(res.data.tickets)
+            // remove tickets with event id null
+            setTickets(res.data.tickets.filter(ticket => ticket.eventId !==
+             null))
         }
         catch (error) {
             console.log(error)
@@ -30,6 +33,8 @@ const MyTickets = () => {
         fetchTickets()
     }, [])
 
+
+    console.log(tickets)
 
     return (
         <div>

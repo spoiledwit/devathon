@@ -25,6 +25,9 @@ export function countDaysBetween(startDate: Date, endDate: Date): number {
 }
 
 export function parseLatLng(str: string) {
+  if (!str) {
+    return { lat: 0, lng: 0 };
+  }
   const [lat, lng] = str.split(",").map(Number);
   return { lat, lng };
 }
