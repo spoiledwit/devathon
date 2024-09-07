@@ -6,6 +6,9 @@ import express from "express";
 
 const router = express.Router();
 
-router.get("/", stats);
+import verifyToken from "../middlewares/verifyToken.js";
+import { isAdmin } from "../middlewares/isAdmin.js";
+
+router.get("/admin", verifyToken, isAdmin, stats);
 
 export default router;
