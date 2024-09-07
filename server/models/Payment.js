@@ -14,6 +14,9 @@ const PaymentSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    stripeId: {
+        type: String,
+    },
     paymentStatus: {
         type: String,
         enum: ["pending", "approved", "rejected"],
