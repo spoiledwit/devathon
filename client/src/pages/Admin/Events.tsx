@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Calendar, Trash2, Loader, PlusCircle } from "lucide-react";
+import { Calendar, Trash2, Loader, PlusCircle, Edit } from "lucide-react";
 import { toast } from "react-hot-toast";
 import Locator from "@/components/Locator/Locator";
 
@@ -100,14 +100,16 @@ const Events: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
   const [eventToDelete, setEventToDelete] = useState<Event | null>(null);
   const [createDialogOpen, setCreateDialogOpen] = useState<boolean>(false);
+  const [updateDialogOpen, setUpdateDialogOpen] = useState<boolean>(false);
+  const [eventToUpdate, setEventToUpdate] = useState<Event | null>(null);
   const [newEvent, setNewEvent] = useState<Partial<Event>>({});
 
   const fetchEvents = async () => {
     setLoading(true);
     try {
-      const response = await axios.get<Event[]>(`${BASE_URL}/api/events`);
-      setEvents(response.data);
-      updateEventStats(response.data);
+      const response = await axios.get(`${BASE_URL}/event/all`);
+      setEvents(response.data.events);
+      updateEventStats(response.data.events);
     } catch (error) {
       console.error("Error fetching events:", error);
       toast.error("Failed to fetch events");
@@ -137,7 +139,7 @@ const Events: React.FC = () => {
     if (!eventToDelete) return;
 
     try {
-      await axios.delete(`${BASE_URL}/api/events/${eventToDelete._id}`);
+      await axios.delete(`${BASE_URL}/event/${eventToDelete._id}`);
       toast.success("Event deleted successfully");
       fetchEvents();
     } catch (error) {
@@ -173,6 +175,43 @@ const Events: React.FC = () => {
       console.error("Error creating event:", error);
       toast.error("Failed to create event");
     }
+  };
+
+  const handleUpdateEvent = async () => {
+    if (!eventToUpdate) return;
+
+    try {
+      const updatedEventData = {
+        ...eventToUpdate,
+        location: `${location.lat},${location.lng}`,
+        region,
+        images,
+      };
+      await axios.put(`${BASE_URL}/event/${eventToUpdate._id}`, updatedEventData, {
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        }
+      });
+      toast.success("Event updated successfully");
+      fetchEvents();
+      setUpdateDialogOpen(false);
+      setEventToUpdate(null);
+      setRegion("");
+      setLocation({ lat: 0, lng: 0 });
+      setImages([]);
+    } catch (error) {
+      console.error("Error updating event:", error);
+      toast.error("Failed to update event");
+    }
+  };
+
+  const openUpdateDialog = (event: Event) => {
+    setEventToUpdate(event);
+    setRegion(event.region);
+    const [lat, lng] = event.location.split(',').map(Number);
+    setLocation({ lat, lng });
+    setImages(event.images);
+    setUpdateDialogOpen(true);
   };
 
   if (loading) {
@@ -252,6 +291,14 @@ const Events: React.FC = () => {
                     <TableCell>${event.price.toFixed(2)}</TableCell>
                     <TableCell>
                       <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openUpdateDialog(event)}
+                        className="mr-2"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
                         variant="destructive"
                         size="sm"
                         onClick={() => {
@@ -292,6 +339,7 @@ const Events: React.FC = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
       <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
         <DialogContent className="sm:max-w-[600px] max-h-[100vh] overflow-y-auto flex flex-col">
           <DialogHeader>
@@ -401,8 +449,120 @@ const Events: React.FC = () => {
               onClick={() => setCreateDialogOpen(false)}
             >
               Cancel
-            </Button>
+              </Button>
             <Button onClick={handleCreateEvent}>Create Event</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={updateDialogOpen} onOpenChange={setUpdateDialogOpen}>
+        <DialogContent className="sm:max-w-[600px] max-h-[100vh] overflow-y-auto flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Update Event</DialogTitle>
+          </DialogHeader>
+          <div className="flex-grow pr-4">
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="updateTitle" className="text-right">
+                  Title
+                </Label>
+                <Input
+                  id="updateTitle"
+                  value={eventToUpdate?.title || ""}
+                  onChange={(e) =>
+                    setEventToUpdate(eventToUpdate ? { ...eventToUpdate, title: e.target.value } : null)
+                  }
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="updateEventDate" className="text-right">
+                  Date
+                </Label>
+                <Input
+                  id="updateEventDate"
+                  type="date"
+                  value={eventToUpdate?.eventDate?.split('T')[0] || ""}
+                  onChange={(e) =>
+                    setEventToUpdate(eventToUpdate ? { ...eventToUpdate, eventDate: e.target.value } : null)
+                  }
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="updateDescription" className="text-right">
+                  Description
+                </Label>
+                <Textarea
+                  id="updateDescription"
+                  value={eventToUpdate?.description || ""}
+                  onChange={(e) =>
+                    setEventToUpdate(eventToUpdate ? { ...eventToUpdate, description: e.target.value } : null)
+                  }
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="updateLocation" className="text-right">
+                  Location
+                </Label>
+                <div className="col-span-3">
+                  <Locator
+                    setLocation={setLocation}
+                    Location={location}
+                    selectRegion={setRegion}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="updateImages" className="text-right">
+                  Images
+                </Label>
+                <div className="col-span-3">
+                  <PhotosUploader
+                    addedPhotos={images}
+                    onChange={setImages}
+                    maxPhotos={5}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="updateCategory" className="text-right">
+                  Category
+                </Label>
+                <Input
+                  id="updateCategory"
+                  value={eventToUpdate?.category || ""}
+                  onChange={(e) =>
+                    setEventToUpdate(eventToUpdate ? { ...eventToUpdate, category: e.target.value } : null)
+                  }
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="updatePrice" className="text-right">
+                  Price
+                </Label>
+                <Input
+                  id="updatePrice"
+                  type="number"
+                  value={eventToUpdate?.price || ""}
+                  onChange={(e) =>
+                    setEventToUpdate(eventToUpdate ? { ...eventToUpdate, price: parseFloat(e.target.value) } : null)
+                  }
+                  className="col-span-3"
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="mt-6">
+            <Button
+              variant="outline"
+              onClick={() => setUpdateDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleUpdateEvent}>Update Event</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

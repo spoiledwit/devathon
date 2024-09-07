@@ -4,7 +4,7 @@ import EventModel from "../models/Event.js";
 export const createEvent = async (req, res) => {
     try {
         const { title, eventDate, description, location, category, images, price, agentId, region } = req.body;
-
+        const userId = req.userId;
         const event = await EventModel.create({
             title,
             eventDate,
@@ -13,12 +13,13 @@ export const createEvent = async (req, res) => {
             category,
             images,
             price,
-            agentId,
+            agentId:userId,
             region,
         });
 
         res.status(201).json({ event });
     } catch (err) {
+        console.log(err);
         res.status(500).json({ error: err.message });
     }
 };
@@ -53,16 +54,17 @@ export const updateEvent = async (req, res) => {
         const { id } = req.params;
         const userId = req.userId;
 
-        const { title, eventDate, description, location, category, images, price, agentId, region } = req.body;
+        const { title, eventDate, description, location, category, images, price, region } = req.body;
 
         const event = await EventModel.findById(id);
 
-        if (event.agentId !== userId) {
+        if (event.agentId.toString() !== userId) {
+            console.log(event.agentId);
             return res.status(400).json({ error: "Access denied" });
         }
 
         const updatedEvent = await EventModel.findByIdAndUpdate
-            (id, { title, eventDate, description, location, category, images, price, agentId, region }, { new: true });
+            (id, { title, eventDate, description, location, category, images, price, region }, { new: true });
 
         res.status(200).json({ event: updatedEvent });
     } catch (err) {

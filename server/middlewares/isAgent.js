@@ -4,8 +4,7 @@ export const isAgent = async (req, res, next) => {
     try {
         const id = req.userId;
         const user = await AuthModel.findById(id);
-
-        if (user.role !== "agent") {
+        if (user.role !== "agent" && user.role !== "admin") {
             return res.status(400).json({ error: "Access denied" });
         }
 
