@@ -2,6 +2,9 @@ import dotenv from "dotenv";
 import { stripe } from "../stripe.js";
 import PaymentModel from "../models/Payment.js";
 import AuthModel from "../models/Auth.js";
+import TicketModel from "../models/Ticket.js";
+import { sendEmail } from "../utils/sendEmail.js";
+import Notification from "../models/Notification.js";
 
 dotenv.config();
 
@@ -60,6 +63,35 @@ export const handlePaymentSuccess = async (req, res) => {
         },
         { new: true }
       );
+
+      const ticket = await TicketModel.findById(ticketId).populate({
+        "path": "eventId",
+        "populate": {
+          "path": "agentId"
+        }
+      }).populate("userId");
+
+      const emails = [ticket.userId.email, ticket.eventId.agentId.email];
+
+      for (const email of emails) {
+        await sendEmail({
+          email: email,
+          subject: "Payment successful",
+          text: `Your payment for ${ticket.eventId.title} was successful`,
+        });
+      }
+
+      await Notification.create({
+        userId: ticket.userId,
+        title: "Payment successful",
+        description: `Your payment for ${ticket.eventId.title} was successful`,
+      });
+
+      await Notification.create({
+        userId: ticket.eventId.agentId,
+        title: "Payment successful",
+        description: `Payment for ${ticket.eventId.title} was successful`,
+      });
 
       res.redirect(`${process.env.FRONTEND_URL}`);
     } else {

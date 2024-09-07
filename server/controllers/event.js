@@ -2,6 +2,7 @@ import AuthModel from "../models/Auth.js";
 import EventModel from "../models/Event.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import TicketModel from "../models/Ticket.js";
+import { moderateContent } from "../utils/moderateContent.js";
 
 // Create Event
 export const createEvent = async (req, res) => {
@@ -16,6 +17,12 @@ export const createEvent = async (req, res) => {
             price,
             region,
         } = req.body;
+
+        const isSafe = await moderateContent(title);
+        if (!isSafe) {
+            return res.status(400).json({ error: "Content is not safe" });
+        }
+
         const userId = req.userId;
         const event = await EventModel.create({
             title,
@@ -102,6 +109,11 @@ export const updateEvent = async (req, res) => {
             return res.status(400).json({ error: "Access denied" });
         }
 
+        // checking if postponed
+        if (event.eventDate !== eventDate) {
+            postponeEvent(id);
+        }
+
         const updatedEvent = await EventModel.findByIdAndUpdate(
             id,
             {
@@ -156,39 +168,19 @@ export const getAgentEvents = async (req, res) => {
     }
 };
 
-export const postponeEvent = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const userId = req.userId;
-
-        const { newDate } = req.body;
-
-        const event = await EventModel.findById
-            (id);
-
-        if (event.agentId.toString() !== userId) {
-            return res.status(400).json({ error: "Access denied" });
-        }
-
-        const tickets = await TicketModel.find({ eventId: id }).populate("userId", "email");
-
-        tickets.forEach(async ticket => {
-            await sendEmail({
-                email: ticket.userId.email,
-                subject: "Event Postponed",
-                text: `The event ${event.title} has been postponed.`
-            });
+export const postponeEvent = async (id) => {
+    const tickets = await TicketModel.find({ eventId: id }).populate(
+        "userId",
+        "email"
+    ).populate("eventId", "title");
+    tickets.forEach(async (ticket) => {
+        await sendEmail({
+            email: ticket.userId.email,
+            subject: "Event Postponed",
+            text: `The event ${ticket.event.title} has been postponed.`,
         });
-
-        const updatedEvent = await EventModel.findByIdAndUpdate
-            (id, { eventDate: newDate }, { new: true });
-
-        res.status(200).json({ event: updatedEvent });
-    }
-    catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-}
+    });
+};
 
 export const getEventsByCategory = async (req, res) => {
     try {

@@ -13,6 +13,7 @@ import eventRouts from "./routes/eventRoutes.js";
 import otpRoutes from "./routes/otpRoutes.js";
 import ticketRoutes from "./routes/ticketRoutes.js";
 import conversationRoutes from "./routes/conversationRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 
 dotenv.config();
 
@@ -52,6 +53,7 @@ app.use("/event", eventRouts);
 app.use("/otp", otpRoutes);
 app.use("/ticket", ticketRoutes);
 app.use("/conversation", conversationRoutes);
+app.use("/notification", notificationRoutes);
 
 app.use("/moderate", async (req, res)=>{
   const { text } = req.body;
