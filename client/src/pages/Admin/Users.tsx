@@ -1,4 +1,4 @@
-import  { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Users as UsersIcon, Trash2, Loader, UserMinus, UserCheck } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -30,14 +30,31 @@ import {
 
 const BASE_URL = import.meta.env.VITE_BASE_URI;
 
-const UserWidget = ({ icon: Icon, label, value, bgColor, iconColor, textColor }:{
-  icon: any,
-  label: string,
-  value: number,
-  bgColor: string,
-  iconColor: string,
-  textColor: string
-}) => (
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: 'admin' | 'user' | 'agent';
+  revenue: number;
+}
+
+interface UserStats {
+  totalUsers: number;
+  adminUsers: number;
+  agentUsers: number;
+  regularUsers: number;
+}
+
+interface UserWidgetProps {
+  icon: React.ElementType;
+  label: string;
+  value: number;
+  bgColor: string;
+  iconColor: string;
+  textColor: string;
+}
+
+const UserWidget: React.FC<UserWidgetProps> = ({ icon: Icon, label, value, bgColor, iconColor, textColor }) => (
   <Card className={`${bgColor}`}>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <CardTitle className="text-sm font-medium">{label}</CardTitle>
@@ -49,21 +66,22 @@ const UserWidget = ({ icon: Icon, label, value, bgColor, iconColor, textColor }:
   </Card>
 );
 
-const Users = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [userStats, setUserStats] = useState({
+const Users: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [userStats, setUserStats] = useState<UserStats>({
     totalUsers: 0,
-    activeUsers: 0,
-    inactiveUsers: 0,
+    adminUsers: 0,
+    agentUsers: 0,
+    regularUsers: 0,
   });
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [userToDelete, setUserToDelete] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BASE_URL}/api/users`);
+      const response = await axios.get<User[]>(`${BASE_URL}/api/users`);
       setUsers(response.data);
       updateUserStats(response.data);
     } catch (error) {
@@ -74,11 +92,12 @@ const Users = () => {
     }
   };
 
-  const updateUserStats = (userData:any) => {
-    const stats = {
+  const updateUserStats = (userData: User[]) => {
+    const stats: UserStats = {
       totalUsers: userData.length,
-      activeUsers: userData.filter((user:any) => user.status === 'active').length,
-      inactiveUsers: userData.filter((user:any) => user.status !== 'active').length,
+      adminUsers: userData.filter(user => user.role === 'admin').length,
+      agentUsers: userData.filter(user => user.role === 'agent').length,
+      regularUsers: userData.filter(user => user.role === 'user').length,
     };
     setUserStats(stats);
   };
@@ -115,7 +134,7 @@ const Users = () => {
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">User Management</h1>
       
-      <div className="grid gap-4 md:grid-cols-3 mb-6">
+      <div className="grid gap-4 md:grid-cols-4 mb-6">
         <UserWidget
           icon={UsersIcon}
           label="Total Users"
@@ -126,16 +145,24 @@ const Users = () => {
         />
         <UserWidget
           icon={UserCheck}
-          label="Active Users"
-          value={userStats.activeUsers}
+          label="Admin Users"
+          value={userStats.adminUsers}
           bgColor="bg-green-100"
           iconColor="text-green-600"
           textColor="text-green-600"
         />
         <UserWidget
+          icon={UserCheck}
+          label="Agent Users"
+          value={userStats.agentUsers}
+          bgColor="bg-yellow-100"
+          iconColor="text-yellow-600"
+          textColor="text-yellow-600"
+        />
+        <UserWidget
           icon={UserMinus}
-          label="Inactive Users"
-          value={userStats.inactiveUsers}
+          label="Regular Users"
+          value={userStats.regularUsers}
           bgColor="bg-red-100"
           iconColor="text-red-600"
           textColor="text-red-600"
@@ -153,22 +180,26 @@ const Users = () => {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Revenue</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user:any) => (
+              {users.map((user) => (
                 <TableRow key={user._id}>
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 rounded-full text-xs ${
-                      user.status === 'active' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'
+                      user.role === 'admin' ? 'bg-green-200 text-green-800' :
+                      user.role === 'agent' ? 'bg-yellow-200 text-yellow-800' :
+                      'bg-blue-200 text-blue-800'
                     }`}>
-                      {user.status}
+                      {user.role}
                     </span>
                   </TableCell>
+                  <TableCell>${user.revenue.toFixed(2)}</TableCell>
                   <TableCell>
                     <Button
                       variant="destructive"

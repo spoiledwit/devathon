@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Layout from "./Layout";
 import AdminLayout from "./pages/Admin/Layout";
 import Dashboard from "./pages/Admin/Dashboard";
+import Users from "./pages/Admin/Users";
 
 const App = () => {
   return (
@@ -16,7 +17,7 @@ const App = () => {
 
         <Route path="admin" element={<AdminLayout />}>
           <Route path="" element={<Dashboard />} />
-          <Route path="users" element={<h1>Users</h1>} />
+          <Route path="users" element={<Users />} />
           <Route path="products" element={<h1>Products</h1>} />
           <Route path="orders" element={<h1>Orders</h1>} />
           <Route path="categories" element={<h1>Categories</h1>} />
