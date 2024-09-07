@@ -7,6 +7,7 @@ import authRoutes from "./routes/authRoutes.js";
 import { initSocket } from "./socket.js";
 import { createServer } from "http";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import analyticsRoutes from "./routes/analyticsRoutes.js";
 
 dotenv.config();
 
@@ -40,6 +41,7 @@ db.on("disconnected", () => {
 // ROUTES
 app.use("/auth", authRoutes);
 app.use("/payment", paymentRoutes);
+app.use("/analytics", analyticsRoutes);
 app.use("/moderate", async (req, res)=>{
   const { text } = req.body;
   const isSafe = await moderateContent(text);

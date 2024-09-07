@@ -1,11 +1,22 @@
 import dotenv from "dotenv";
 import { stripe } from "../stripe.js";
+import PaymentModel from "../models/Payment.js";
+import TicketModel from "../models/Ticket.js";
 
 dotenv.config();
 
 export const initializePayment = async (req, res) => {
- 
   try {
+    const { ticketId } = req.body;
+
+    const ticket = await TicketModel.findById(ticketId).populate("eventId");
+
+    if (!ticket) {
+      return res.status(404).json({ error: "Ticket not found" });
+    }
+
+    const amount = ticket.eventId.price;
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -13,10 +24,10 @@ export const initializePayment = async (req, res) => {
           price_data: {
             currency: "pkr",
             product_data: {
-              name: "TEST TITLE",
+              name: ticket.eventId.title,
               // images: ["TEST URL"],
             },
-            unit_amount: 10000 * 100 // test price = 10 PKR
+            unit_amount: amount,
           },
           quantity: 1,
         },
@@ -25,8 +36,8 @@ export const initializePayment = async (req, res) => {
       success_url: `${process.env.BACKEND_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL}/cancel`,
       metadata: {
-        id: "test id", // You can add any custom data here
-        userId: "user1" // User ID
+        amount,
+        ticketId
       },
     });
     res.json(session);
@@ -43,19 +54,19 @@ export const handlePaymentSuccess = async (req, res) => {
     const session = await stripe.checkout.sessions.retrieve(session_id);
 
     if (session.payment_status === "paid") {
-     const id = session.metadata.id;
-      const userId = session.metadata.userId;
+      const ticketId = session.metadata.ticketId;
+      const amount = session.metadata.amount;
 
-      console.log(id);
-      console.log(userId);
+      const payment = await PaymentModel.create({
+        paymentDate: new Date(),
+        paymentStatus: "approved",
+        amount,
+        ticketId,
+      });
 
-      // do anything you want with the data on success
-
-      // Create a new Payment
-      // amount: session.amount_total / 100,
-      //   stripeId: session_id,
-     
-     
+      await TicketModel.findByIdAndUpdate(ticketId, {
+        paymentId: payment._id,
+      })
 
       res.redirect(`${process.env.FRONTEND_URL}`);
     } else {

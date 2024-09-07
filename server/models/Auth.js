@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 
 const AuthSchema = new mongoose.Schema({
-    name:{
+    name: {
         type: String,
         required: true
     },
@@ -10,14 +10,18 @@ const AuthSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    hashedPassword:{
+    hashedPassword: {
         type: String,
         required: true
     },
-    role:{
+    role: {
         type: String,
-        enum: ["admin", "user"],
+        enum: ["admin", "user", "agent"],
         default: "user"
+    },
+    revenue: {
+        type: Number,
+        default: 0
     },
 })
 
