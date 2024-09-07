@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
 import "./SearchBar.css";
 import { useLocation } from "react-router-dom";
+import { ListRestart } from "lucide-react";
 
 // @ts-ignore
-const FullSearchBar = ({ input, setInput, startingDate, setCheckIn, endingDate, setCheckOut, handleClick }) => (
+const FullSearchBar = ({ input, setInput, startingDate, setCheckIn, endingDate, setCheckOut, handleClick, resetFilters }) => (
   <form className="flex items-center justify-between w-full h-full" onSubmit={handleClick}>
     <div className="flex-1 px-4 py-4 ml-6 min-w-[280px]">
       <label className="block text-[13px] font-medium">Where</label>
@@ -36,6 +37,9 @@ const FullSearchBar = ({ input, setInput, startingDate, setCheckIn, endingDate, 
         value={endingDate}
         onChange={(e) => setCheckOut(e.target.value)}
       />
+    </div>
+    <div title="Reset Filters" className="border-l w-fit px-4 py-4">
+      <ListRestart onClick={resetFilters} size={20} />
     </div>
     <button
       type="submit"
@@ -80,6 +84,13 @@ const SearchBar = () => {
   const navigate = useNavigate();
   const focusTimeoutRef = useRef(null);
   const isBlockedRef = useRef(false);
+
+  const resetFilters = () => {
+    setInput("");
+    setCheckIn("");
+    setCheckOut("");
+    navigate("");
+  };
 
   const handleClick = (e: any) => {
     e.preventDefault();
@@ -144,6 +155,7 @@ const SearchBar = () => {
         ) : (
           <FullSearchBar
             input={input}
+            resetFilters={resetFilters}
             setInput={setInput}
             startingDate={startingDate}
             setCheckIn={setCheckIn}

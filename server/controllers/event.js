@@ -37,10 +37,27 @@ export const createEvent = async (req, res) => {
 // Get all Events
 export const getEvents = async (req, res) => {
   try {
-    // get region from query params
-    const { region } = req.query;
-    // get events where region of event is something like the region from query params
-    const events = await EventModel.find({ region: { $regex: region, $options: "i" } }).populate("agentId", "name");
+    // get region, startingDate, and endingDate from query params
+    const { region, startingDate, endingDate } = req.query;
+
+    // Create query object
+    let query = {};
+
+    // Check if region is provided
+    if (region) {
+      query.region = { $regex: region, $options: "i" };
+    }
+
+    // Check if both startingDate and endingDate are provided
+    if (startingDate && endingDate) {
+      query.eventDate = {
+        $gte: new Date(startingDate), // Greater than or equal to the starting date
+        $lte: new Date(endingDate), // Less than or equal to the ending date
+      };
+    }
+
+    // Fetch events based on the query
+    const events = await EventModel.find(query).populate("agentId", "name");
 
     res.status(200).json({ events });
   } catch (err) {
