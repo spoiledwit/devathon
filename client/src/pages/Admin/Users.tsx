@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Users as UsersIcon, Trash2, Loader, UserMinus, UserCheck } from 'lucide-react';
+import { Users as UsersIcon, Trash2, Loader, UserMinus, UserCheck, UserPlus, Edit } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 import {
@@ -27,6 +27,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const BASE_URL = import.meta.env.VITE_BASE_URI;
 
@@ -77,6 +79,14 @@ const Users: React.FC = () => {
   });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [registerAgentDialogOpen, setRegisterAgentDialogOpen] = useState<boolean>(false);
+  const [newAgent, setNewAgent] = useState<{ name: string; email: string; password: string }>({
+    name: '',
+    email: '',
+    password: '',
+  });
+  const [updateUserDialogOpen, setUpdateUserDialogOpen] = useState<boolean>(false);
+  const [userToUpdate, setUserToUpdate] = useState<User | null>(null);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -114,7 +124,11 @@ const Users: React.FC = () => {
     if (!userToDelete) return;
 
     try {
-      await axios.delete(`${BASE_URL}/auth/${userToDelete._id}`);
+      await axios.delete(`${BASE_URL}/admin/user/${userToDelete._id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }
+      });
       toast.success('User deleted successfully');
       fetchUsers();
     } catch (error) {
@@ -123,6 +137,42 @@ const Users: React.FC = () => {
     } finally {
       setDeleteDialogOpen(false);
       setUserToDelete(null);
+    }
+  };
+
+  const handleRegisterAgent = async () => {
+    try {
+      await axios.post(`${BASE_URL}/admin/agent`, newAgent, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }
+      });
+      toast.success('Agent registered successfully');
+      fetchUsers();
+      setRegisterAgentDialogOpen(false);
+      setNewAgent({ name: '', email: '', password: '' });
+    } catch (error) {
+      console.error('Error registering agent:', error);
+      toast.error('Failed to register agent');
+    }
+  };
+
+  const handleUpdateUser = async () => {
+    if (!userToUpdate) return;
+
+    try {
+      await axios.put(`${BASE_URL}/admin/user/${userToUpdate._id}`, userToUpdate, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }
+      });
+      toast.success('User updated successfully');
+      fetchUsers();
+      setUpdateUserDialogOpen(false);
+      setUserToUpdate(null);
+    } catch (error) {
+      console.error('Error updating user:', error);
+      toast.error('Failed to update user');
     }
   };
 
@@ -136,7 +186,13 @@ const Users: React.FC = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">User Management</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">User Management</h1>
+        <Button onClick={() => setRegisterAgentDialogOpen(true)}>
+          <UserPlus className="mr-2 h-4 w-4" />
+          Register Agent
+        </Button>
+      </div>
       
       <div className="grid gap-4 md:grid-cols-4 mb-6">
         <UserWidget
@@ -206,6 +262,17 @@ const Users: React.FC = () => {
                   <TableCell>${user.revenue.toFixed(2)}</TableCell>
                   <TableCell>
                     <Button
+                      variant="outline"
+                      size="sm"
+                      className="mr-2"
+                      onClick={() => {
+                        setUserToUpdate(user);
+                        setUpdateUserDialogOpen(true);
+                      }}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
                       variant="destructive"
                       size="sm"
                       onClick={() => {
@@ -234,6 +301,113 @@ const Users: React.FC = () => {
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
             <Button variant="destructive" onClick={handleDeleteUser}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={registerAgentDialogOpen} onOpenChange={setRegisterAgentDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Register New Agent</DialogTitle>
+            <DialogDescription>
+              Enter the details of the new agent.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Name
+              </Label>
+              <Input
+                id="name"
+                value={newAgent.name}
+                onChange={(e) => setNewAgent({ ...newAgent, name: e.target.value })}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="email" className="text-right">
+                Email
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                value={newAgent.email}
+                onChange={(e) => setNewAgent({ ...newAgent, email: e.target.value })}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="password" className="text-right">
+                Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                value={newAgent.password}
+                onChange={(e) => setNewAgent({ ...newAgent, password: e.target.value })}
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRegisterAgentDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleRegisterAgent}>Register Agent</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={updateUserDialogOpen} onOpenChange={setUpdateUserDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Update User</DialogTitle>
+            <DialogDescription>
+              Update the details of the user.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="updateName" className="text-right">
+                Name
+              </Label>
+              <Input
+                id="updateName"
+                value={userToUpdate?.name || ''}
+                onChange={(e) => setUserToUpdate(prev => prev ? {...prev, name: e.target.value} : null)}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="updateEmail" className="text-right">
+                Email
+              </Label>
+              <Input
+                id="updateEmail"
+                type="email"
+                value={userToUpdate?.email || ''}
+                onChange={(e) => setUserToUpdate(prev => prev ? {...prev, email: e.target.value} : null)}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="updateRole" className="text-right">
+                Role
+              </Label>
+              <select
+                id="updateRole"
+                value={userToUpdate?.role || ''}
+                onChange={(e) => setUserToUpdate(prev => prev ? {...prev, role: e.target.value as 'admin' | 'user' | 'agent'} : null)}
+                className="col-span-3 p-2 rounded-md border border-gray-300"
+              >
+                <option value="admin">Admin</option>
+                <option value="agent">Agent</option>
+                <option value="user">User</option>
+              </select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setUpdateUserDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleUpdateUser}>Update User</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

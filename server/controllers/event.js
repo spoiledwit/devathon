@@ -1,3 +1,4 @@
+import AuthModel from "../models/Auth.js";
 import EventModel from "../models/Event.js";
 
 // Create Event
@@ -50,7 +51,7 @@ export const getEventById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const event = await EventModel.findById(id);
+    const event = await EventModel.findById(id).populate("agentId", "name");
     res.status(200).json({ event });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -108,9 +109,10 @@ export const deleteEvent = async (req, res) => {
     const { id } = req.params;
     const user = req.userId;
 
+    const userObj = await AuthModel.findById(user);
     const event = await EventModel.findById(id);
 
-    if (event.agentId.toString() !== user) {
+    if (event.agentId.toString() !== user && userObj.role !== "admin") {
       return res.status(400).json({ error: "Access denied" });
     }
 

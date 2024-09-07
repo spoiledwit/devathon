@@ -23,3 +23,8 @@ export function countDaysBetween(startDate: Date, endDate: Date): number {
   const differenceInDays = Math.round(differenceInTime / oneDay);
   return differenceInDays;
 }
+
+export function parseLatLng(str: string) {
+  const [lat, lng] = str.split(",").map(Number);
+  return { lat, lng };
+}

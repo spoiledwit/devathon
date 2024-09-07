@@ -1,6 +1,8 @@
 import EventCard from '@/components/Events/EventCard/EventCard'
+import { Event } from '@/types'
+import { Link } from 'react-router-dom'
 
-const Events = () => {
+const Events = ({ events }: { events: Event[] }) => {
     return (
         <div>
             <h1 className="font-medium text-3xl text-black mb-1">
@@ -8,15 +10,17 @@ const Events = () => {
             </h1>
             <div className="grid grid-cols-4 gap-y-12 mt-10 gap-7">
                 {
-                    Array.from({ length: 10 }).map((_, i) => (
-                        <EventCard
-                            key={i}
-                            coverImage="https://images.unsplash.com/photo-1592853625511-ad0edcc69c07?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                            title="Event Title"
-                            date="2021-10-10T10:00:00Z"
-                            location="Event Location"
-                            description="Event Description"
-                        />
+                    events.map((event, i) => (
+                        <Link to={`/event/${event._id}`} key={i}>
+                            <EventCard
+                                key={i}
+                                coverImage={event.images[0]}
+                                title={event.title}
+                                date={event.eventDate.toString()}
+                                location={event.region}
+                                description={event.description}
+                            />
+                        </Link>
                     ))
                 }
             </div>
