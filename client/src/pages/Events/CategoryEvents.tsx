@@ -30,13 +30,13 @@ const CategoryEvents = () => {
 
 
     return (
-        <div className='px-44'>
+        <div className='md:px-44 px-5'>
             <h1 className="font-medium text-3xl text-black mb-1">
                 {capitalizeFirstLetter(categoryName?.replace(/-/g, ' '))}
             </h1>
 
             {loading ? (
-                <div className="animate-pulse gap-5 grid grid-cols-4">
+                <div className="animate-pulse gap-5 grid md:grid-cols-4 grid-cols-1">
                     {
                         Array.from({ length: 5 }).map((_, i) => (
                             <div className="flex flex-col gap-2" key={i}>
@@ -48,7 +48,7 @@ const CategoryEvents = () => {
                 </div>
             )
                 :
-                <div className="grid grid-cols-4 gap-y-12 mt-10 gap-7">
+                <div className="grid md:grid-cols-4 grid-cols-1 gap-y-12 mt-10 gap-7">
                     {
                         events.map((event, i) => (
                             <Link to={`/event/${event._id}`} key={i}>

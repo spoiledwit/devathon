@@ -51,7 +51,6 @@ const TicketCard = ({ ticket }: { ticket: Ticket }) => {
                                 </PDFDownloadLink>
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={handleOpenModal}>See Location</DropdownMenuItem>
-                            <DropdownMenuItem>Copy Coordinates</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>

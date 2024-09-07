@@ -8,7 +8,7 @@ import Booking from "@/components/Item/Booking";
 import Content from "@/components/Item/Content";
 import { useParams } from "react-router-dom";
 import ItemMap from "@/components/maps/itemMap";
-import { parseLatLng } from "@/lib/utils";
+import { parseLatLng, toReadableDate } from "@/lib/utils";
 
 interface Location {
     lat: number;
@@ -63,13 +63,8 @@ const EventDetails = () => {
                             <div className="mt-10 gap-10 relative flex md:flex-row flex-col">
                                 <div className="md:w-2/3 w-full">
                                     <Content content={item.description} item={item} />
-                                    <div className="flex md:flex-row mt-10 flex-col gap-5 justify-around items-center ">
-                                        <Calendar
-                                            mode="single"
-                                            selected={item.eventDate}
-                                            disabled
-                                            className="rounded-md border text-black"
-                                        />
+                                    <div className="mt-10 text-lg font-semibold border rounded px-3 py-1 border-black">
+                                        Event date: {toReadableDate(item.eventDate)}
                                     </div>
                                 </div>
                                 <div className="h-fit sticky top-44 md:w-1/3 w-full">

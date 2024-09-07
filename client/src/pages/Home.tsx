@@ -30,9 +30,9 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       <div className="">
-        <div className="w-full p-5 px-20">
+        <div className="w-full p-5 md:px-20">
           {loading ? (
-            <div className="animate-pulse gap-5 grid grid-cols-4">
+            <div className="animate-pulse gap-5 grid md:grid-cols-4 grid-cols-1">
               {
                 Array.from({ length: 5 }).map((_, i) => (
                   <div className="flex flex-col gap-2" key={i}>

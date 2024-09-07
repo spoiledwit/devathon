@@ -7,7 +7,7 @@ import { ListRestart } from "lucide-react";
 
 // @ts-ignore
 const FullSearchBar = ({ input, setInput, startingDate, setCheckIn, endingDate, setCheckOut, handleClick, resetFilters }) => (
-  <form className="flex items-center justify-between w-full h-full" onSubmit={handleClick}>
+  <form className="items-center justify-between flex w-full h-full" onSubmit={handleClick}>
     <div className="flex-1 px-4 py-4 ml-6 min-w-[280px]">
       <label className="block text-[13px] font-medium">Where</label>
       <input
@@ -145,8 +145,8 @@ const SearchBar = () => {
     <div>
       <div
         onClick={handleFocus}
-        className={`search-bar-container cursor-pointer mx-auto transition-all duration-300 ${isScrolled
-          ? "compact mt-[-50px] top-6 transform mx-auto w-[375px] overflow-hidden"
+        className={`search-bar-container md:block hidden cursor-pointer mx-auto transition-all duration-300 ${isScrolled
+          ? "compact mt-[-50px] top-6 transform mx-auto md:w-[375px] overflow-hidden"
           : "full"
           }`}
       >
