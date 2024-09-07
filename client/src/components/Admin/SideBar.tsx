@@ -24,7 +24,7 @@ const SideBar = () => {
       icon: <RxDashboard />,
     },
     {
-      title: "Orders",
+      title: "tickets",
       slug: "/admin/tickets",
       icon: <RxDashboard />,
     },

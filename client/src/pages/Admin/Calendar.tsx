@@ -8,6 +8,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import useAuthStore from "@/store/authStore";
+import { Link, redirect } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const BASE_URL = import.meta.env.VITE_BASE_URI;
 
@@ -40,8 +42,8 @@ const AdminEventCalendar: React.FC = () => {
     fetchEvents();
   }, []);
 
-  if(!user) {
-    return <div>Loading...</div>
+  if (!user) {
+    return <div>Loading...</div>;
   }
 
   const { role } = user;
@@ -122,6 +124,20 @@ const AdminEventCalendar: React.FC = () => {
                 <p>Price: ${selectedEvent.price}</p>
                 <p>Region: {selectedEvent.region}</p>
                 <p>Description: {selectedEvent.description}</p>
+
+                <Link
+                  to={`/event/${selectedEvent._id}`}
+                  className="w-full bg-violet-800 text-white rounded-lg hover:bg-violet-900 h-10 mt-auto my-4 flex md:gap-2 items-center justify-center"
+                >
+                  View Event Details
+                </Link>
+
+                <Link
+                  to={`/admin/events`}
+                  className="w-full bg-violet-800 text-white rounded-lg hover:bg-violet-900 h-10 mt-auto my-4 flex md:gap-2 items-center justify-center"
+                >
+                  Edit Event
+                </Link>
               </CardContent>
             </Card>
           ) : (

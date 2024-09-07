@@ -42,4 +42,4 @@ type Payment = {
   updatedAt: string;
 };
 
-export type { Event, Payment, Ticket, User };
+export type { Event, User, Payment, Ticket };
