@@ -1,9 +1,15 @@
 import UserGrowth from "./UsersGrowth";
 
-const AdminStats = () => {
+const AdminStats = ({
+  users
+}:{
+  users: any[];
+}) => {
   return (
     <div className="flex w-full gap-2">
-      <UserGrowth />
+      <UserGrowth 
+      users={users}
+      />
     </div>
   );
 };

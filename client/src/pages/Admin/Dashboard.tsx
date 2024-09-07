@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import {
   Users,
-  FileText,
-  MessageSquare,
-  ClipboardList,
-  Briefcase,
+  CreditCard,
+  Ticket,
+  Calendar,
+  UserPlus,
   Loader
 } from "lucide-react";
 import axios from "axios";
@@ -13,28 +13,38 @@ import { toast } from "react-hot-toast";
 import AdminStats from "@/components/Admin/AdminStats";
 import useAuthStore from "@/store/authStore";
 
-const Dashboard = () => {
+interface DashboardData {
+  users: any[];
+  payments: any[];
+  tickets: any[];
+  events: any[];
+  newUsers: any[];
+}
 
-  const {user} = useAuthStore();
-  const [dashboardData, setDashboardData] = useState({
-    usersCount: 0,
-    quotationsCount: 0,
-    enquiriesCount: 0,
-    conversationsCount: 0,
-    jobsCount: 0,
+const Dashboard = () => {
+  const { user } = useAuthStore();
+  const [dashboardData, setDashboardData] = useState<DashboardData>({
+    users: [],
+    payments: [],
+    tickets: [],
+    events: [],
+    newUsers: [],
   });
   const [loading, setLoading] = useState(true);
-  //@ts-ignore
+
   const userRole = user?.role;
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       if (!userRole) return;
-
       setLoading(true);
       try {
-        const endpoint = userRole === 'admin' ? `${import.meta.env.VITE_BASE_URI}/analytics/admin` : `${import.meta.env.VITE_BASE_URI}/analytics/agent`;
-        const response = await axios.get(endpoint);
+        const endpoint = `${import.meta.env.VITE_BASE_URI}/analytics/admin`;
+        const response = await axios.get(endpoint, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
         setDashboardData(response.data);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -50,12 +60,12 @@ const Dashboard = () => {
   }, [userRole]);
 
   const Widget = ({ icon: Icon, label, value, bgColor, iconColor, textColor }:{
-    icon: any,
-    label: string,
-    value: number,
-    bgColor: string,
-    iconColor: string,
-    textColor: string
+    icon: any;
+    label: string;
+    value: number;
+    bgColor: string;
+    iconColor: string;
+    textColor: string;
   }) => (
     <div className={`${bgColor} p-6 rounded-lg shadow-sm flex flex-col items-center`}>
       <div className={`${iconColor} rounded-full p-3 inline-block`}>
@@ -71,40 +81,40 @@ const Dashboard = () => {
   const widgets = [
     {
       icon: Users,
-      label: "Users",
-      value: dashboardData.usersCount,
+      label: "Total Users",
+      value: dashboardData.users.length,
       textColor: "text-blue-500",
       bgColor: "bg-blue-400/20",
       iconColor: "bg-blue-500",
     },
     {
-      icon: FileText,
-      label: "Enquiries",
-      value: dashboardData.enquiriesCount,
+      icon: CreditCard,
+      label: "Payments",
+      value: dashboardData.payments.length,
       textColor: "text-green-500",
       bgColor: "bg-green-400/20",
       iconColor: "bg-green-500",
     },
     {
-      icon: ClipboardList,
-      label: "Quotations",
-      value: dashboardData.quotationsCount,
+      icon: Ticket,
+      label: "Tickets",
+      value: dashboardData.tickets.length,
       textColor: "text-yellow-500",
       bgColor: "bg-yellow-400/20",
       iconColor: "bg-yellow-500",
     },
     {
-      icon: MessageSquare,
-      label: "Conversations",
-      value: dashboardData.conversationsCount,
+      icon: Calendar,
+      label: "Events",
+      value: dashboardData.events.length,
       textColor: "text-pink-500",
       bgColor: "bg-pink-400/20",
       iconColor: "bg-pink-500",
     },
     {
-      icon: Briefcase,
-      label: "Jobs",
-      value: dashboardData.jobsCount,
+      icon: UserPlus,
+      label: "New Users (7 days)",
+      value: dashboardData.newUsers.length,
       textColor: "text-purple-500",
       bgColor: "bg-purple-400/20",
       iconColor: "bg-purple-500",
@@ -128,7 +138,9 @@ const Dashboard = () => {
       </div>
       {userRole === 'admin' && (
         <div className="mt-6">
-          <AdminStats />
+          <AdminStats
+          users={dashboardData.users}
+          />
         </div>
       )}
     </div>

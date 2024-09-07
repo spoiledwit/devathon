@@ -31,7 +31,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import PhotosUploader from "@/components/ImageUploader";
 
 const BASE_URL = import.meta.env.VITE_BASE_URI;
@@ -139,7 +138,11 @@ const Events: React.FC = () => {
     if (!eventToDelete) return;
 
     try {
-      await axios.delete(`${BASE_URL}/event/${eventToDelete._id}`);
+      await axios.delete(`${BASE_URL}/event/${eventToDelete._id}`, {
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        }
+      });
       toast.success("Event deleted successfully");
       fetchEvents();
     } catch (error) {
