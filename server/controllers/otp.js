@@ -1,5 +1,5 @@
-import OTPModel from "../models/OTP";
-import { sendEmail } from "../utils/sendEmail";
+import OTPModel from "../models/OTP.js";
+import { sendEmail } from "../utils/sendEmail.js";
 
 // Generate OTP
 export const generateOTP = async (req, res) => {
