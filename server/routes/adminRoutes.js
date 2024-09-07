@@ -7,7 +7,7 @@ import {
 } from "../controllers/admin.js"
 
 import verifyToken from "../middlewares/verifyToken.js";
-import { isAdmin } from "../middlewares/isAdmin"
+import { isAdmin } from "../middlewares/isAdmin.js"
 
 import express from "express"
 
