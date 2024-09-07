@@ -51,11 +51,20 @@ export const getEventById = async (req, res) => {
 export const updateEvent = async (req, res) => {
     try {
         const { id } = req.params;
+        const userId = req.userId;
+
         const { title, eventDate, description, location, category, images, price, agentId, region } = req.body;
 
-        const event = await EventModel.findByIdAndUpdate(id, { title, eventDate, description, location, category, images, price, agentId, region }, { new: true });
+        const event = await EventModel.findById(id);
 
-        res.status(200).json({ event });
+        if (event.agentId !== userId) {
+            return res.status(400).json({ error: "Access denied" });
+        }
+
+        const updatedEvent = await EventModel.findByIdAndUpdate
+            (id, { title, eventDate, description, location, category, images, price, agentId, region }, { new: true });
+
+        res.status(200).json({ event: updatedEvent });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
