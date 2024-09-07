@@ -23,6 +23,14 @@ const AuthSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    notifications: {
+        type: Array,
+        default: []
+    },
+    MFA: {
+        type: Boolean,
+        default: false
+    },
 })
 
 const AuthModel = mongoose.model("Auth", AuthSchema);

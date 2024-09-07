@@ -54,23 +54,12 @@ const AccountDrawer = () => {
             </Link>
 
             <Link
-              to="/wishlist"
-              className="flex items-center gap-2 px-3 text-sm py-2 rounded-lg hover:bg-gray-200"
-            >
-              Wishlist
-            </Link>
-            <Link
               to="/profile"
               className="flex items-center gap-2 px-3 text-sm py-2 rounded-lg hover:bg-gray-200"
             >
               Account
             </Link>
-            <Link
-              to={"/reset-password"}
-              className="flex items-center gap-2 px-3 text-sm py-2 rounded-lg hover:bg-gray-200"
-            >
-              Reset Password
-            </Link>
+
             <div
               onClick={handleSignOut}
               className="flex items-center gap-2 px-3 py-2 text-gray-800 text-sm cursor-pointer rounded-lg hover:bg-gray-200"
