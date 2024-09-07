@@ -31,6 +31,7 @@ const ItemMap = ({ lat, lng }: { lat: number; lng: number }) => {
         }
       );
     }
+    console.log("coordinates: ", lat, lng)
   }, [isLoaded]);
 
   if (loadError) return <div>Error loading maps</div>;

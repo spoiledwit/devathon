@@ -5,7 +5,6 @@ import { useState } from "react";
 const Calendar = ({
   startDate,
   title,
-  setStartDate,
 }: {
   startDate: Date | null;
   title: string;

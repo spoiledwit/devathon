@@ -3,7 +3,8 @@ import {
     getEvents,
     getEventById,
     getAgentEvents,
-    updateEvent
+    updateEvent,
+    deleteEvent
 } from '../controllers/event.js';
 
 import express from 'express';
@@ -19,5 +20,6 @@ router.post('/', verifyToken, isAgent, createEvent);
 router.put('/:id', verifyToken, isAgent, updateEvent);
 router.get('/all', getEvents);
 router.get('/:id', getEventById);
+router.delete('/:id', verifyToken, isAgent, deleteEvent);
 
 export default router;

@@ -7,6 +7,7 @@ import AdminLayout from "./pages/Admin/Layout";
 import Dashboard from "./pages/Admin/Dashboard";
 import Users from "./pages/Admin/Users";
 import EventDetails from "./pages/Events/EventDetails";
+import Events from "./pages/Admin/Events";
 
 const App = () => {
   return (
@@ -15,12 +16,12 @@ const App = () => {
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
-        <Route path="/events/:id" element={<EventDetails />} />
+        <Route path="/event/:id" element={<EventDetails />} />
 
         <Route path="admin" element={<AdminLayout />}>
           <Route path="" element={<Dashboard />} />
           <Route path="users" element={<Users />} />
-          <Route path="products" element={<h1>Products</h1>} />
+          <Route path="events" element={<Events />} />
           <Route path="orders" element={<h1>Orders</h1>} />
           <Route path="categories" element={<h1>Categories</h1>} />
         </Route>

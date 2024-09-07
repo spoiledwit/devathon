@@ -2,7 +2,11 @@ import { useState } from "react";
 import { UserGrowthChart } from "./Charts";
 import { TrendingUp, Users, ArrowUpRight, BarChart2 } from "lucide-react";
 
-const UserGrowth = () => {
+const UserGrowth = ({
+  users
+}:{
+  users: any[];
+}) => {
   const [timeFrame, setTimeFrame] = useState("1y");
 
   const timeFrames = [

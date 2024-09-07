@@ -1,24 +1,28 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
-import { Calendar as ShadCalendar } from '@/components/ui/calendar'
+import { Calendar } from '@/components/ui/calendar'
 import PlaceGallery from "@/components/Item/PlaceGallery";
 import loadinganimation from "@/assets/loading.gif";
 import Booking from "@/components/Item/Booking";
 import Content from "@/components/Item/Content";
 import { useParams } from "react-router-dom";
 import ItemMap from "@/components/maps/itemMap";
+import { parseLatLng } from "@/lib/utils";
+
+interface Location {
+    lat: number;
+    lng: number;
+}
 
 const EventDetails = () => {
     const [item, setItem] = useState<any>();
     const [loading, setLoading] = useState<boolean>(true);
-    const [startDate, setStartDate] = useState<Date | null>(new Date());
-    const today = new Date();
-    const modifiers = {
-        beforeStart: { before: startDate },
-    };
+    const [location, setLocation] = useState<Location>({
+        lat: 0,
+        lng: 0,
+    });
 
-    const [endDate, setEndDate] = useState<Date | null>(new Date(new Date().getTime() + 24 * 60 * 60 * 1000));
     const { id } = useParams();
 
     useEffect(() => {
@@ -29,7 +33,9 @@ const EventDetails = () => {
     const fetchItem = async () => {
         try {
             const res = await axios.get(`${import.meta.env.VITE_BASE_URI}/event/${id}`);
-            setItem(res.data);
+            console.log(res.data.event)
+            setLocation(parseLatLng(res.data.event.location))
+            setItem(res.data.event);
             setLoading(false);
         } catch (error) {
             console.log(error);
@@ -57,25 +63,18 @@ const EventDetails = () => {
                             </div>
                             <div className="mt-10 gap-10 relative flex md:flex-row flex-col">
                                 <div className="md:w-2/3 w-full">
-                                    <Content content={item.content} item={item} />
+                                    <Content content={item.description} item={item} />
                                     <div className="flex md:flex-row mt-10 flex-col gap-5 justify-around items-center ">
-                                        <ShadCalendar
+                                        <Calendar
                                             mode="single"
-                                            className=""
-                                            selected={startDate ? startDate : new Date()}
-                                            // onSelect={setStartDate}
-                                            disabled={{ before: new Date() }} // Disable dates before today
-                                        />
-                                        <ShadCalendar
-                                            mode="single"
-                                        // selected={endDate}
-                                        // onSelect={setEndDate}
-                                        // disabled={startDate ? modifiers.beforeStart : { before: today }} // Disable dates before the selected start date
+                                            selected={item.eventDate}
+                                            disabled
+                                            className="rounded-md border text-black"
                                         />
                                     </div>
                                 </div>
                                 <div className="h-fit sticky top-44 md:w-1/3 w-full">
-                                    <Booking startDate={new Date()} endDate={new Date()} setStartDate={setStartDate} setEndDate={setEndDate} item={item} />
+                                    <Booking item={item} />
                                 </div>
                             </div>
 
@@ -83,8 +82,8 @@ const EventDetails = () => {
                         <div className="w-full mt-10">
                             <p className="text-2xl font-semibold">Where you'll be</p>
                             <ItemMap
-                                lat={item.location.lat}
-                                lng={item.location.lng}
+                                lat={location.lat}
+                                lng={location.lng}
                             />
                         </div>
 
