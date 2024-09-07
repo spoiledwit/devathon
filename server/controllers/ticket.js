@@ -3,13 +3,12 @@ import TicketModel from "../models/Ticket.js";
 // Create Ticket
 export const createTicket = async (req, res) => {
     try {
-        const { eventId, userId } = req.body;
-
+        const userId = req.userId;
+        const { eventId } = req.body;
         const ticket = await TicketModel.create({
             eventId,
             userId,
         });
-
         res.status(201).json({ ticket });
     } catch (err) {
         res.status(500).json({ error: err.message });
