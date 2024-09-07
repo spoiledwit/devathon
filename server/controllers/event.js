@@ -74,6 +74,13 @@ export const updateEvent = async (req, res) => {
 export const deleteEvent = async (req, res) => {
     try {
         const { id } = req.params;
+        const user = req.userId;
+
+        const event = await EventModel.findById(id);
+
+        if (event.agentId !== user) {
+            return res.status(400).json({ error: "Access denied" });
+        }
 
         await EventModel.findByIdAndDelete(id);
 
