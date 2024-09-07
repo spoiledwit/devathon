@@ -15,7 +15,6 @@ import verifyToken from '../middlewares/verifyToken.js';
 import { isAgent } from '../middlewares/isAgent.js';
 
 router.get('/agent', verifyToken, isAgent, getAgentEvents);
-
 router.post('/', verifyToken, isAgent, createEvent);
 router.put('/:id', verifyToken, isAgent, updateEvent);
 router.get('/all', getEvents);

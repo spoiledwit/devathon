@@ -3,7 +3,7 @@ import axios from "axios";
 import { Calendar, Trash2, Loader, PlusCircle, Edit } from "lucide-react";
 import { toast } from "react-hot-toast";
 import Locator from "@/components/Locator/Locator";
-
+import useAuthStore from "@/store/authStore";
 import {
   Table,
   TableBody,
@@ -83,6 +83,7 @@ const EventWidget: React.FC<EventWidgetProps> = ({
 );
 
 const Events: React.FC = () => {
+  const { user } = useAuthStore();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [eventStats, setEventStats] = useState<EventStats>({
@@ -106,7 +107,12 @@ const Events: React.FC = () => {
   const fetchEvents = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BASE_URL}/event/all`);
+      const slug = user?.role === "admin" ? "all" : "agent";
+      const response = await axios.get(`${BASE_URL}/event/${slug}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       setEvents(response.data.events);
       updateEventStats(response.data.events);
     } catch (error) {
@@ -140,8 +146,8 @@ const Events: React.FC = () => {
     try {
       await axios.delete(`${BASE_URL}/event/${eventToDelete._id}`, {
         headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
-        }
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
       toast.success("Event deleted successfully");
       fetchEvents();
@@ -164,8 +170,8 @@ const Events: React.FC = () => {
       };
       await axios.post(`${BASE_URL}/event`, eventData, {
         headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
-        }
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
       toast.success("Event created successfully");
       fetchEvents();
@@ -190,11 +196,15 @@ const Events: React.FC = () => {
         region,
         images,
       };
-      await axios.put(`${BASE_URL}/event/${eventToUpdate._id}`, updatedEventData, {
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+      await axios.put(
+        `${BASE_URL}/event/${eventToUpdate._id}`,
+        updatedEventData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-      });
+      );
       toast.success("Event updated successfully");
       fetchEvents();
       setUpdateDialogOpen(false);
@@ -211,7 +221,7 @@ const Events: React.FC = () => {
   const openUpdateDialog = (event: Event) => {
     setEventToUpdate(event);
     setRegion(event.region);
-    const [lat, lng] = event.location.split(',').map(Number);
+    const [lat, lng] = event.location.split(",").map(Number);
     setLocation({ lat, lng });
     setImages(event.images);
     setUpdateDialogOpen(true);
@@ -452,7 +462,7 @@ const Events: React.FC = () => {
               onClick={() => setCreateDialogOpen(false)}
             >
               Cancel
-              </Button>
+            </Button>
             <Button onClick={handleCreateEvent}>Create Event</Button>
           </DialogFooter>
         </DialogContent>
@@ -473,7 +483,11 @@ const Events: React.FC = () => {
                   id="updateTitle"
                   value={eventToUpdate?.title || ""}
                   onChange={(e) =>
-                    setEventToUpdate(eventToUpdate ? { ...eventToUpdate, title: e.target.value } : null)
+                    setEventToUpdate(
+                      eventToUpdate
+                        ? { ...eventToUpdate, title: e.target.value }
+                        : null
+                    )
                   }
                   className="col-span-3"
                 />
@@ -485,9 +499,13 @@ const Events: React.FC = () => {
                 <Input
                   id="updateEventDate"
                   type="date"
-                  value={eventToUpdate?.eventDate?.split('T')[0] || ""}
+                  value={eventToUpdate?.eventDate?.split("T")[0] || ""}
                   onChange={(e) =>
-                    setEventToUpdate(eventToUpdate ? { ...eventToUpdate, eventDate: e.target.value } : null)
+                    setEventToUpdate(
+                      eventToUpdate
+                        ? { ...eventToUpdate, eventDate: e.target.value }
+                        : null
+                    )
                   }
                   className="col-span-3"
                 />
@@ -500,7 +518,11 @@ const Events: React.FC = () => {
                   id="updateDescription"
                   value={eventToUpdate?.description || ""}
                   onChange={(e) =>
-                    setEventToUpdate(eventToUpdate ? { ...eventToUpdate, description: e.target.value } : null)
+                    setEventToUpdate(
+                      eventToUpdate
+                        ? { ...eventToUpdate, description: e.target.value }
+                        : null
+                    )
                   }
                   className="col-span-3"
                 />
@@ -537,7 +559,11 @@ const Events: React.FC = () => {
                   id="updateCategory"
                   value={eventToUpdate?.category || ""}
                   onChange={(e) =>
-                    setEventToUpdate(eventToUpdate ? { ...eventToUpdate, category: e.target.value } : null)
+                    setEventToUpdate(
+                      eventToUpdate
+                        ? { ...eventToUpdate, category: e.target.value }
+                        : null
+                    )
                   }
                   className="col-span-3"
                 />
@@ -551,7 +577,14 @@ const Events: React.FC = () => {
                   type="number"
                   value={eventToUpdate?.price || ""}
                   onChange={(e) =>
-                    setEventToUpdate(eventToUpdate ? { ...eventToUpdate, price: parseFloat(e.target.value) } : null)
+                    setEventToUpdate(
+                      eventToUpdate
+                        ? {
+                            ...eventToUpdate,
+                            price: parseFloat(e.target.value),
+                          }
+                        : null
+                    )
                   }
                   className="col-span-3"
                 />
