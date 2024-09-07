@@ -38,7 +38,10 @@ export const createEvent = async (req, res) => {
 // Get all Events
 export const getEvents = async (req, res) => {
   try {
-    const events = await EventModel.find();
+    // get region from query params
+    const { region } = req.query;
+    // get events where region of event is something like the region from query params
+    const events = await EventModel.find({ region: { $regex: region, $options: "i" } }).populate("agentId", "name");
 
     res.status(200).json({ events });
   } catch (err) {

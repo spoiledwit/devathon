@@ -11,6 +11,7 @@ import analyticsRoutes from "./routes/analyticsRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import eventRouts from "./routes/eventRoutes.js";
 import otpRoutes from "./routes/otpRoutes.js";
+import ticketRoutes from "./routes/ticketRoutes.js";
 
 dotenv.config();
 
@@ -48,6 +49,7 @@ app.use("/payment", paymentRoutes);
 app.use("/analytics", analyticsRoutes);
 app.use("/event", eventRouts);
 app.use("/otp", otpRoutes);
+app.use("/ticket", ticketRoutes);
 
 app.use("/moderate", async (req, res)=>{
   const { text } = req.body;
