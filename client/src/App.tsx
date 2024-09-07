@@ -8,6 +8,7 @@ import Dashboard from "./pages/Admin/Dashboard";
 import Users from "./pages/Admin/Users";
 import EventDetails from "./pages/Events/EventDetails";
 import Events from "./pages/Admin/Events";
+import Chat from "./pages/Chat/Chat";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="/event/:id" element={<EventDetails />} />
+        <Route path="/chat" element={<Chat />} />
 
         <Route path="admin" element={<AdminLayout />}>
           <Route path="" element={<Dashboard />} />

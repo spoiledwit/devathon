@@ -1,10 +1,11 @@
 import { useState } from "react";
 import useAuthStore from "@/store/authStore";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LiveChat from "@/components/LiveChat";
 import VideoCall from "@/components/VideoCall";
 import { useToast } from "@/hooks/use-toast";
 import { Calendar } from "@/components/ui/calendar"
+import { Button } from "@/components/ui/button";
 
 const Booking = ({ item, }: { item: any }) => {
 
@@ -47,6 +48,16 @@ const Booking = ({ item, }: { item: any }) => {
       <h3 className="text-2xl font-semibold text-black">
         ${item.price}
       </h3>
+      <div className="flex flex-col gap-0">
+        {/* <PersonSelector
+          adults={adults}
+          setAdults={setAdults}
+          children={children}
+          setChildren={setChildren}
+          infants={infants}
+          setInfants={setInfants}
+        /> */}
+      </div>
       <button
         onClick={handleAddToCart}
         disabled={booking || !user}
@@ -61,7 +72,12 @@ const Booking = ({ item, }: { item: any }) => {
         <p>Total before taxes</p>
         <p>${item.price}</p>
       </div>
-      <LiveChat item={item} />
+      <Link to={'/chat'}>
+        <Button className="bg-black text-white rounded-md w-full">
+          Chat
+        </Button>
+      </Link>
+      {/* <LiveChat item={item} /> */}
       {/* @ts-ignore */}
       <VideoCall item={item} />
     </div>
