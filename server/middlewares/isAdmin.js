@@ -1,11 +1,11 @@
 import AuthModel from "../models/Auth.js";
 
-export const isAgent = async (req, res, next) => {
+export const isAdmin = async (req, res, next) => {
     try {
         const { id } = req.user;
         const user = await AuthModel.findById(id);
 
-        if (user.role !== "agent") {
+        if (user.role !== "admin") {
             return res.status(400).json({ error: "Access denied" });
         }
 

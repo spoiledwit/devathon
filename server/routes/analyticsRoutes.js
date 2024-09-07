@@ -6,6 +6,6 @@ import express from "express";
 
 const router = express.Router();
 
-router.get("/stats", stats);
+router.get("/", stats);
 
 export default router;

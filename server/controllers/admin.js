@@ -58,14 +58,3 @@ export const deleteUser = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
-
-// Users registered in last 7 days
-export const newUsers = async (req, res) => {
-    try {
-        const users = await AuthModel.find({ createdAt: { $gt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } });
-        res.status(200).json({ users });
-    }
-    catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-};
