@@ -12,7 +12,6 @@ export const createEvent = async (req, res) => {
       category,
       images,
       price,
-      agentId,
       region,
     } = req.body;
     const userId = req.userId;
