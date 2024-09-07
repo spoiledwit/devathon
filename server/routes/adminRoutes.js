@@ -3,7 +3,8 @@ import {
     getAllPayments,
     getAllTickets,
     getAllUsers,
-    deleteUser
+    deleteUser,
+    makeAgent
 } from "../controllers/admin.js"
 
 import verifyToken from "../middlewares/verifyToken.js";
@@ -17,6 +18,7 @@ router.get("/users", verifyToken, isAdmin, getAllUsers);
 router.get("/payments", verifyToken, isAdmin, getAllPayments);
 router.get("/tickets", verifyToken, isAdmin, getAllTickets);
 router.get("/events", verifyToken, isAdmin, getAllEvents);
+router.post("/agent/:id", verifyToken, isAdmin, makeAgent);
 router.delete("/user/:id", verifyToken, isAdmin, deleteUser);
 
 export default router;

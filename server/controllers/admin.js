@@ -58,3 +58,17 @@ export const deleteUser = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+// Make User an Agent
+export const makeAgent = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await Auth.findById(id);
+        user.role = "agent";
+        await user.save();
+        res.status(200).json({ message: "User is now an agent" });
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
