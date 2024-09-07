@@ -4,7 +4,8 @@ import {
     getEventById,
     getAgentEvents,
     updateEvent,
-    deleteEvent
+    deleteEvent,
+    postponeEvent
 } from '../controllers/event.js';
 
 import express from 'express';
@@ -16,6 +17,7 @@ import { isAgent } from '../middlewares/isAgent.js';
 
 router.get('/agent', verifyToken, isAgent, getAgentEvents);
 router.post('/', verifyToken, isAgent, createEvent);
+router.put('/postpone/:id', verifyToken, isAgent, postponeEvent);
 router.put('/:id', verifyToken, isAgent, updateEvent);
 router.get('/all', getEvents);
 router.get('/:id', getEventById);

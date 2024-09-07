@@ -161,6 +161,8 @@ export const postponeEvent = async (req, res) => {
         const { id } = req.params;
         const userId = req.userId;
 
+        const { newDate } = req.body;
+
         const event = await EventModel.findById
             (id);
 
@@ -172,14 +174,14 @@ export const postponeEvent = async (req, res) => {
 
         tickets.forEach(async ticket => {
             await sendEmail({
-                to: ticket.userId.email,
+                email: ticket.userId.email,
                 subject: "Event Postponed",
                 text: `The event ${event.title} has been postponed.`
             });
         });
 
         const updatedEvent = await EventModel.findByIdAndUpdate
-            (id, { eventDate: new Date() }, { new: true });
+            (id, { eventDate: newDate }, { new: true });
 
         res.status(200).json({ event: updatedEvent });
     }
