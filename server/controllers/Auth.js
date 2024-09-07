@@ -72,3 +72,17 @@ export const getUser = async (req, res) => {
         res.status(404).json({ message: error.message });
     }
 };
+
+export const updateUser = async (req, res) => {
+    try {
+        const { name, email, MFA } = req.body;
+        const user = await AuthModel.findById(req.userId);
+        if (name) user.name = name;
+        if (email) user.email = email;
+        if (MFA !== undefined) user.MFA = MFA;
+        await user.save();
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+};

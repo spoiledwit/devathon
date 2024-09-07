@@ -11,6 +11,7 @@ import Events from "./pages/Admin/Events";
 import Chat from "./pages/Chat/Chat";
 import Calendar from "./pages/Admin/Calendar";
 import Payments from "./pages/Admin/Payments";
+import ProfilePage from "./pages/Profile";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         <Route path="register" element={<Register />} />
         <Route path="/event/:id" element={<EventDetails />} />
         <Route path="/chat" element={<Chat />} />
+        <Route path="/profile" element={<ProfilePage />} />
 
         <Route path="admin" element={<AdminLayout />}>
           <Route path="" element={<Dashboard />} />
