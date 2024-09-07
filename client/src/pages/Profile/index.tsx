@@ -48,16 +48,16 @@ const ProfilePage = () => {
   if (!user) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-black"></div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-4">
-          <h1 className="text-3xl font-bold text-white">User Profile</h1>
+      <div className="max-w-3xl mx-auto rounded-lg overflow-hidden">
+        <div className="px-6 py-4">
+          <h1 className="text-3xl font-bold text-black">User Profile</h1>
         </div>
         <div className="p-6">
           <form onSubmit={handleSubmit(onSubmit)}>
