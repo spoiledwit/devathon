@@ -14,10 +14,7 @@ type Event = {
   title: string;
   description: string;
   eventDate: Date;
-  location: {
-    lat: number;
-    lng: number;
-  };
+  location: string;
   region: string;
   price: number;
   images: string[];
@@ -45,4 +42,4 @@ type Payment = {
   updatedAt: string;
 };
 
-export type { Event, Ticket, User, Payment };
+export type { Event, Payment, Ticket, User };

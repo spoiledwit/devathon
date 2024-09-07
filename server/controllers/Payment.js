@@ -74,3 +74,12 @@ export const handlePaymentSuccess = async (req, res) => {
 export const handlePaymentFailure = async (req, res) => {
   res.status(400).send("Payment failed");
 };
+
+export const getPayments = async (req, res) => {
+  try {
+    const payments = await PaymentModel.find();
+    res.status(200).json({ payments });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}

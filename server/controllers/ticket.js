@@ -63,10 +63,7 @@ export const updateTicket = async (req, res) => {
 // Get Tickets of a User
 export const getUserTickets = async (req, res) => {
   try {
-    const { userId } = req.params;
-
-    const tickets = await TicketModel.find({ userId });
-
+    const tickets = await TicketModel.find({ userId: req.userId }).populate("eventId", "title description eventDate images location").populate("userId", "name email");
     res.status(200).json({ tickets });
   } catch (err) {
     res.status(500).json({ error: err.message });

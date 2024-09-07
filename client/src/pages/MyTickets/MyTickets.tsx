@@ -1,32 +1,11 @@
+import { Ticket } from "@/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import TicketCard from "./TicketCard";
 
 const MyTickets = () => {
-    const ticketsDumb = [
-        {
-            id: 1,
-            title: 'Concert Ticket',
-            description: 'Live concert with your favorite artist',
-            boughtDate: '2024-08-30',
-            imageUrl: 'https://via.placeholder.com/150',
-        },
-        {
-            id: 2,
-            title: 'Movie Premiere',
-            description: 'Exclusive movie premiere event',
-            boughtDate: '2024-07-15',
-            imageUrl: 'https://via.placeholder.com/150',
-        },
-        {
-            id: 3,
-            title: 'Theater Play',
-            description: 'Watch a classic theater play live',
-            boughtDate: '2024-09-01',
-            imageUrl: 'https://via.placeholder.com/150',
-        },
-    ];
 
-    const [tickets, setTickets] = useState([])
+    const [tickets, setTickets] = useState<Ticket[]>([])
     const [loading, setLoading] = useState(false)
 
     const fetchTickets = async () => {
@@ -38,8 +17,7 @@ const MyTickets = () => {
                 }
             })
             console.log(res.data);
-            // setTickets(data)
-            setLoading(false)
+            setTickets(res.data.tickets)
         }
         catch (error) {
             console.log(error)
@@ -55,27 +33,33 @@ const MyTickets = () => {
 
     return (
         <div>
-            <div className="min-h-screen bg-gray-100 flex flex-col items-center py-8">
-                <h1 className="text-3xl font-bold mb-8">My Tickets</h1>
+            <div className="min-h-screen  flex flex-col items-center py-8">
+                <h1 className="text-3xl font-medium mb-8">My Tickets</h1>
 
-                <div className="grid grid-cols-1 gap-6 border border-red-500 w-full px-44">
-                    {ticketsDumb.map((ticket) => (
-                        <div
-                            key={ticket.id}
-                            className="bg-white shadow-md rounded-lg w-full overflow-hidden border border-red-500 mx-auto"
-                        >
-                            <img
-                                className="w-full h-48 object-cover"
-                                src={ticket.imageUrl}
-                                alt={ticket.title}
-                            />
-                            <div className="p-4">
-                                <h2 className="text-xl font-semibold text-gray-800">{ticket.title}</h2>
-                                <p className="text-gray-600 my-2">{ticket.description}</p>
-                                <p className="text-sm text-gray-500">Bought on: {ticket.boughtDate}</p>
-                            </div>
+                <div className="grid grid-cols-1 gap-6  w-full px-44">
+                    {loading ?
+                        <div className="grid grid-cols-1 gap-3">
+                            {
+                                Array.from({ length: 3 }).map((_, i) => (
+                                    <div key={i} className="bg-white shadow-md rounded-lg w-full overflow-hidden  mx-auto">
+                                        <div className="animate-pulse bg-gray-200 h-48"></div>
+                                        <div className="p-4">
+                                            <div className="animate-pulse bg-gray-200 h-4 w-1/2 mb-2"></div>
+                                            <div className="animate-pulse bg-gray-200 h-4 w-1/2 mb-2"></div>
+                                            <div className="animate-pulse bg-gray-200 h-4 w-1/2 mb-2"></div>
+                                        </div>
+                                    </div>
+                                ))
+                            }
                         </div>
-                    ))}
+                        :
+
+                        tickets && tickets.length > 0 ? tickets.map((ticket) => (
+                            <TicketCard key={ticket._id} ticket={ticket} />
+                        ))
+                            :
+                            <h1 className="text-xl font-semibold text-gray-800">No tickets found</h1>
+                    }
                 </div>
             </div>
         </div>
