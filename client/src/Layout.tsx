@@ -50,7 +50,6 @@ const Layout = () => {
   }, []);
 
   useEffect(() => {
-    console.log("user", user);
     if (user && socket) {
       socket.emit("user_connected", user._id);
     }
@@ -59,10 +58,7 @@ const Layout = () => {
   return (
     <div className="min-h-screen">
       <Toaster />
-      {!location.pathname.includes("admin") && (
-
-<Navbar />
-      )}
+      {!location.pathname.includes("admin") && <Navbar />}
       <div>
         <Outlet />
       </div>
