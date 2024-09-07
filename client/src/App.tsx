@@ -11,6 +11,7 @@ import Events from "./pages/Admin/Events";
 import Chat from "./pages/Chat/Chat";
 import Calendar from "./pages/Admin/Calendar";
 import Payments from "./pages/Admin/Payments";
+import Tickets from "./pages/Admin/Tickets";
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
           <Route path="categories" element={<h1>Categories</h1>} />
           <Route path="calendar" element={<Calendar />} />
           <Route path="payments" element={<Payments />} />
+          <Route path="tickets" element={<Tickets />} />
         </Route>
 
         <Route path="*" element={<h1>Not Found</h1>} />
