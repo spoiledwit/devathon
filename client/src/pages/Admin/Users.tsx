@@ -81,9 +81,13 @@ const Users: React.FC = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get<User[]>(`${BASE_URL}/api/users`);
-      setUsers(response.data);
-      updateUserStats(response.data);
+      const response = await axios.get(`${BASE_URL}/admin/users`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }
+      }); 
+      setUsers(response.data.users);
+      updateUserStats(response.data.users);
     } catch (error) {
       console.error('Error fetching users:', error);
       toast.error('Failed to fetch users');

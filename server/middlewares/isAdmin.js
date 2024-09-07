@@ -2,7 +2,7 @@ import AuthModel from "../models/Auth.js";
 
 export const isAdmin = async (req, res, next) => {
     try {
-        const { id } = req.user;
+        const id= req.userId;
         const user = await AuthModel.findById(id);
 
         if (user.role !== "admin") {
@@ -12,6 +12,7 @@ export const isAdmin = async (req, res, next) => {
         next();
     }
     catch (err) {
+        console.log(err);
         res.status(500).json({ error: err.message });
     }
 }
