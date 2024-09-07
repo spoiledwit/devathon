@@ -1,6 +1,6 @@
 import { MdSpaceDashboard } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { FaUserFriends } from "react-icons/fa";
+import { FaUserFriends, FaCalendar  } from "react-icons/fa";
 import { RxDashboard } from "react-icons/rx";
 import { useLocation } from "react-router-dom";
 import { IoLogOut } from "react-icons/io5";
@@ -37,6 +37,11 @@ const SideBar = () => {
       title: "Users",
       slug: "/admin/users",
       icon: <FaUserFriends />,
+    },
+    {
+      title: "Calendar",
+      slug: "/admin/calendar",
+      icon: <FaCalendar />,
     },
   ];
 
